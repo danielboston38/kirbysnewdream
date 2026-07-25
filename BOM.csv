@@ -1,0 +1,11 @@
+Reference,Description,Value,Package/Footprint,Manufacturer,Manufacturer Part Number,Quantity,Supplier Link,Notes
+C1,Electrolytic capacitor,100µF 16V,Radial THT,MOGAOPI,,1,,Bulk cap on switched 5V rail to GND
+C2,Electrolytic capacitor,100µF 16V,Radial THT,MOGAOPI,,1,,Coupling cap; blocks DC bias from Q1 emitter before RCA jack
+D1,Zener/TVS diode,5.6V,DO-41 THT,Littelfuse,1N4733A,1,,Cathode (banded end) toward VBUS/+5V side
+F1,PTC resettable polyfuse,IH=2.0A / IT=3.8A / VMAX=16V,Radial disc THT,Littelfuse,RHEF200,1,,Non-polarized; KiCad footprint field mislabeled as polarized cap footprint in v1 (fix in v2)
+Q1,PNP transistor,2SA1015,TO-92 THT,MCC,2SA1015,1,,"Flat side facing viewer, leads down = E-C-B left to right. Base=video in, Emitter=R1/C2 net, Collector=GND"
+R1,Resistor,300Ω (design value),THT,MOGAOPI,,1,,"Built with 330Ω substitute (~10% off, acceptable)"
+R3,Resistor,5.1kΩ,THT,MOGAOPI,,1,,CC1 pulldown; measured 5.07kΩ
+R4,Resistor,5.1kΩ,THT,MOGAOPI,,1,,CC2 pulldown; measured 5.13kΩ
+R5,Resistor,75Ω,THT,MOGAOPI,,1,,Video series termination; not yet sourced as of this BOM
+USB C1,USB-C receptacle,USB4970-00-A,SMD,GCT,USB4970-00-A,1,,"6-pin power-only (VBUS x2, GND x2, CC1, CC2); no data lines"

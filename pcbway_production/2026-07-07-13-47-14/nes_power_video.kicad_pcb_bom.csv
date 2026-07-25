@@ -1,0 +1,12 @@
+﻿Designator,Quantity,Value,Footprint,Package,MPN,DNP,Mount_Type,Description,KiLib_Generator,Sim.Device,Sim.Pins
+"C1, C2",2,100uf,CP_Radial_D10.0mm_P5.00mm,,,,tht,Polarized capacitor,capacitor/THT/other,,
+D1,1,1.5KExxA,D_DO-201AE_P15.24mm_Horizontal,,,,tht,"1500W unidirectional TVS diode, DO-201AE",diode/THT,,
+F1,1,Polyfuse_Small,Fuse_Bourns_MF-RG300,,,,tht,"Resettable fuse, polymeric positive temperature coefficient, small symbol",fuse,,
+J2,1,Audio,nes connector,,,,tht,RCA Jack Through Hole,,,
+J3,1,Video,nes connector,,,,tht,RCA Jack Through Hole,,,
+J4,1,Conn_01x05,PinHeader_1x05_P2.54mm_Vertical,,,,tht,"Generic connector, single row, 01x05, script generated (kicad-library-utils/schlib/autogen/connector/)",connector/pin_header_socket,,
+Q1,1,2SA1015,TO-92_Inline,,,,tht,"-0.15A Ic, -50V Vce, Low Noise Audio PNP Transistor, TO-92",,PNP,1=E 2=C 3=B
+R1,1,300,R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal,,,,tht,"Resistor, small symbol",resistor/THT,,
+"R3, R4",2,5.1k,R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal,,,,tht,Resistor,resistor/THT,,
+R5,1,75 Ohm,R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal,,,,tht,Resistor,resistor/THT,,
+USB-C1,1,USB_C_Receptacle_PowerOnly_6P,USB_C_Receptacle_GCT_USB4125-xx-x-0190_6P_TopMnt_Horizontal,,,,smt,USB Power-Only 6P Type-C Receptacle connector,,,

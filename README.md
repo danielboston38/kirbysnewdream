@@ -45,7 +45,7 @@ Refer to BOM.csv for exact part values and footprints. Key notes:
 
 ## License
 
-Licensed under [CERN-OHL-S v2](https://ohwr.org/cern_ohl_s_v2.txt) (strongly reciprocal open hardware license). See [LICENSE](./LICENSE).
+Licensed under [CERN-OHL-S v2](./LICENSE.txt) (strongly reciprocal open hardware license). See [LICENSE](./LICENSE.txt).
 
 ## Photos
 

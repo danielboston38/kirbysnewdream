@@ -127,6 +127,28 @@ hardware, and not a supported mode.
 
 That revision has two defects — Q1's emitter is clamped to the rail, *and* C1 only reaches the rail through R1, so the bulk cap decouples nothing. Both are fixed together:
 
+**Confirm the diagnosis before you cut.** Power off, unplugged, caps discharged.
+Probe +5 V at J4 pin 3 or D1's K-marked lead. Two measurements, mirror images of
+each other:
+
+| Measurement | Defective board | Correctly wired |
+|---|---|---|
+| Q1 emitter → +5 V | **~0 Ω** | ~330 Ω (R1) |
+| C1 **+** terminal → +5 V | **~330 Ω** (stranded behind R1) | ~0 Ω |
+
+After the rework these swap. To identify Q1's legs without relying on the TO-92
+orientation: the leg reading 0 Ω to GND is the collector, the leg with continuity
+to J4 pin 1 is the base, and the remaining one is the emitter.
+
+Two tests that look useful but are not:
+
+- **Emitter → J3 tip.** C2 blocks DC, so this reads open either way.
+- **C1 + → Q1 emitter.** Reads ~330 Ω on a good board *and* a bad one, because R1
+  sits between them in both wirings. It cannot distinguish the two.
+
+Powered, the fastest single check is DC at Q1's emitter: roughly 1.5–3 V if
+correct, sitting at exactly the rail voltage if shorted.
+
 1. **Cut** the 0.8 mm trace leaving R1's left pad toward the **upper left**, about 5–8 mm from the pad. Leave the trace entering that pad from the upper right — that one goes to Q1's emitter and must stay. Two collinear traces (the F1 and D1 branches) overlap along that stretch, so one cut severs both. Do not cut above the point level with D1's cathode, or the rail loses its path to D1 and J4.3.
 2. **Jumper** C1's + pad to F1 pad 1 (the pad whose trace runs left toward D1, not the one toward USB-C). This puts R1's right pad on the rail so R1 becomes the emitter pull-up, and connects C1 to the rail properly.
 3. **Confirm R5 (75Ω) is populated** — it is on the author's board. Without it there is no path from C2 to the RCA jack, so if in doubt check continuity from C2's negative terminal through R5 to J3's tip.

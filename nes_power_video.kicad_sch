@@ -1520,7 +1520,7 @@
 					(justify left top)
 				)
 			)
-			(property "Footprint" "PJRAN1X1U03X"
+			(property "Footprint" "nes1:PJRAN1X1U03X"
 				(at 29.21 -94.92 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -2951,12 +2951,6 @@
 		(uuid "c33bbbfb-890b-4a9b-aae1-130257921792")
 	)
 	(junction
-		(at 128.27 146.05)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "c73bda9b-9bb8-42b7-9c8d-c9047cd63e13")
-	)
-	(junction
 		(at 146.05 149.86)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3018,16 +3012,6 @@
 	)
 	(wire
 		(pts
-			(xy 36.83 175.26) (xy 140.97 175.26)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0f86d4d9-f8ee-45bb-9e81-6025adde403e")
-	)
-	(wire
-		(pts
 			(xy 24.13 194.31) (xy 27.94 194.31)
 		)
 		(stroke
@@ -3055,16 +3039,6 @@
 			(type default)
 		)
 		(uuid "13b3037a-705d-46ac-8578-97640fa8abf5")
-	)
-	(wire
-		(pts
-			(xy 22.86 167.64) (xy 22.86 168.91)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "185190c0-469f-4685-a108-2c0cf32112c5")
 	)
 	(wire
 		(pts
@@ -3388,46 +3362,6 @@
 	)
 	(wire
 		(pts
-			(xy 140.97 175.26) (xy 140.97 154.94)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7f9bfe2f-f0e1-4fb5-b5c4-74d40750de50")
-	)
-	(wire
-		(pts
-			(xy 121.92 146.05) (xy 128.27 146.05)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8126aeef-49fd-4284-be57-e9b0cfa1d4fc")
-	)
-	(wire
-		(pts
-			(xy 33.02 147.32) (xy 34.29 147.32)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "84051a1f-e7e1-4bdd-9437-2c63fe7c0fbd")
-	)
-	(wire
-		(pts
-			(xy 36.83 173.99) (xy 36.83 175.26)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "84eeaa7b-c549-4e54-add4-d9618f1e372f")
-	)
-	(wire
-		(pts
 			(xy 13.97 168.91) (xy 13.97 123.19)
 		)
 		(stroke
@@ -3485,16 +3419,6 @@
 			(type default)
 		)
 		(uuid "ad71e3e4-366f-4e15-8624-7062c374a51b")
-	)
-	(wire
-		(pts
-			(xy 138.43 144.78) (xy 139.7 144.78)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ae254fc4-a45a-4a4b-9d74-92cf77e6c435")
 	)
 	(wire
 		(pts
@@ -3558,16 +3482,6 @@
 	)
 	(wire
 		(pts
-			(xy 38.1 194.31) (xy 39.37 194.31)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c3951d41-4dbb-423c-9af1-cef7843e7ded")
-	)
-	(wire
-		(pts
 			(xy 133.35 146.05) (xy 146.05 171.45)
 		)
 		(stroke
@@ -3595,26 +3509,6 @@
 			(type default)
 		)
 		(uuid "ca933971-9cbd-4697-b5cb-f8db3d11645d")
-	)
-	(wire
-		(pts
-			(xy 138.43 147.32) (xy 139.7 147.32)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "cf462c31-ea6e-4b36-b165-0f7a07477aae")
-	)
-	(wire
-		(pts
-			(xy 92.71 170.18) (xy 95.25 170.18)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "da84f3dc-77cf-4af1-a4aa-71177c5568e9")
 	)
 	(wire
 		(pts
@@ -4517,7 +4411,7 @@
 				)
 			)
 		)
-		(property "Footprint" "PJRAN1X1U03X"
+		(property "Footprint" "nes1:PJRAN1X1U03X"
 			(at 91.44 265.1 0)
 			(hide yes)
 			(show_name no)
@@ -4920,7 +4814,7 @@
 				)
 			)
 		)
-		(property "Footprint" "PJRAN1X1U03X"
+		(property "Footprint" "nes1:PJRAN1X1U03X"
 			(at 52.07 263.83 0)
 			(hide yes)
 			(show_name no)

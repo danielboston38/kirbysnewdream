@@ -18,8 +18,40 @@ This project's schematic design, debugging, and documentation were developed wit
 
 - USB-C power input (power only — no data lines)
 - Composite video output
+- Active overcurrent protection — TPS2553 eFuse with a ~1.18 A resistor-programmed limit, soft-start and thermal shutdown, backed by a polyfuse
 - Fits inside the original NES shell at the stock RF module location
 - 2-layer PCB, designed in KiCad
+
+## Power path
+
+```
+USB-C  ──  F1 polyfuse  ──  U1 TPS2553 eFuse  ──  +5V rail  ──  J4.3 → NES
+  VBUS      2.0A hold        ~1.18A limit          C1 100µF
+            3.8A trip        soft-start            D1 TVS
+            (backup)         thermal shutdown
+```
+
+F1 alone trips at 3.8 A, which protects nothing on a console that draws
+roughly 0.5–0.7 A. U1 is the real protection; F1 stays as a backup in case
+the eFuse ever fails short.
+
+The current limit is set by R6 on U1's ILIM pin. The relationship is
+**inverse** — a larger resistor gives a *lower* limit:
+
+| R6 | Limit (typ) |
+|---|---|
+| 15 kΩ | 1700 mA |
+| 20 kΩ | 1295 mA |
+| **22 kΩ (fitted)** | **~1180 mA** |
+| 49.9 kΩ | 520 mA |
+| 210 kΩ | 130 mA |
+
+Roughly I_OS(A) ≈ 25.9 / R6(kΩ), valid over TI's recommended 15 kΩ–232 kΩ.
+
+U1's EN (pin 3) is active-high and tied to its own input, so the switch is
+always on. FAULT (pin 4) is an open-drain output left unconnected — there is
+nothing inside a closed NES shell to indicate to. If you want fault
+indication, it can sink 25 mA directly.
 
 ## Hardware
 
@@ -33,6 +65,8 @@ This project's schematic design, debugging, and documentation were developed wit
 - F1 (polyfuse) footprint field in KiCad is mislabeled as a polarized capacitor footprint despite correct value — cosmetic/documentation issue only, does not affect function. Fix planned for v2.
 - Video/audio RCA jack mounting holes are slightly asymmetric — cosmetic only, doesn't affect NES shell fit.
 - v1 silkscreen doesn't include component value labels or Q1 pin markers (E/C/B) — planned addition for v2 to ease hand-assembly.
+- D1 (TVS) sits on the output side of U1, so it clamps the 5V rail but does not protect the eFuse's own input against hot-plug transients. Moving it to the `/fused_5v` node (between F1 and U1) would protect both, since the polyfuse would then limit TVS current during a sustained overvoltage. Deferred — it means relocating a part on already-validated hardware.
+- The schematic still carries `Diode:1.5KExxA` (DO-201AE, 1500W TVS) for D1 while the BOM specifies a 1N4733A 5.6V zener in DO-41. These disagree; the fitted part is the 1N4733A. Needs reconciling in v2.
 
 ## Assembly
 
@@ -44,6 +78,9 @@ Refer to BOM.csv for exact part values and footprints. Key notes:
 - R1 (300Ω): emitter load for Q1 — one end to +5V, the other to the Q1 emitter / C2 node. Not both ends to +5V.
 - F1 (polyfuse): sits with slight standoff above PCB by design — this is normal for radial-lead parts, not a defect
 - USB-C1: GCT USB4970-00-A, SMD receptacle — power-only, no data lines
+- U1 (TPS2553, SOT-23-6): pin 1 is IN, marked by the dot on the package. Pin order is IN, GND, EN down one side and OUT, ILIM, FAULT up the other. Order the plain TPS2553DBVR — the `-1` suffix is the latch-off variant, which would need a power cycle after every trip instead of retrying automatically.
+- C3 (100nF, 0805): TI requires this as close to U1 pin 1 as the layout allows. It sits immediately left of U1.
+- R6 (22k, 0805): sets the current limit — see the table above before substituting.
 
 ## License
 

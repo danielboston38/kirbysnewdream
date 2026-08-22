@@ -1,2 +1,8 @@
 .DS_Store
 nes_power_video-backups/
+
+# KiCad transient files
+_autosave-*
+*.lck
+~*.lck
+*-backups/

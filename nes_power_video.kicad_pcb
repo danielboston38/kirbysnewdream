@@ -904,8 +904,8 @@
 			)
 		)
 		(property "Value" "VIDEO"
-			(at 0 2.05 0)
-			(layer "F.Fab")
+			(at 4.599999 0 0)
+			(layer "F.SilkS")
 			(uuid "276b5533-988c-4e8e-b098-cd88cb6d58b1")
 			(effects
 				(font
@@ -1980,8 +1980,8 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 0 2.05 0)
-			(layer "F.Fab")
+			(at -3.5 0 0)
+			(layer "F.SilkS")
 			(uuid "10099dae-1313-4f02-892a-5bd9a5823fba")
 			(effects
 				(font
@@ -8185,8 +8185,8 @@
 			)
 		)
 		(property "Value" "+5V"
-			(at 0 2.05 0)
-			(layer "F.Fab")
+			(at 0 2.4 0)
+			(layer "F.SilkS")
 			(uuid "7dafdefd-9203-4fda-80a6-f983290f77c8")
 			(effects
 				(font
@@ -8288,8 +8288,8 @@
 			)
 		)
 		(property "Value" "AUDIO"
-			(at 0 2.05 0)
-			(layer "F.Fab")
+			(at -1 2.4 0)
+			(layer "F.SilkS")
 			(uuid "96f34cef-3a39-4f6e-8eae-6ceeb11a8a5c")
 			(effects
 				(font

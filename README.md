@@ -1,6 +1,13 @@
-# Kirby's New Dream
+# Link to Video
 
 A custom composite video / USB-C power replacement board for the original Nintendo Entertainment System (NES). Drops in at the original RF module location inside the NES shell, replacing the RF modulator with a clean composite video + USB-C power solution.
+
+> **Renamed.** This project shipped its first revision as **Kirby's New Dream**.
+> From v2 onward it is **Link to Video**. Anything referring to the old name —
+> the v1 board silkscreen, the 2026-07-16 PCBWay fab package under
+> [`pcbway_production/`](./pcbway_production), and older commits — is the same
+> project. The GitHub repository was renamed to match; the previous
+> `kirbysnewdream` URL still redirects.
 
 ## Disclosure
 
@@ -20,7 +27,7 @@ This project's schematic design, debugging, and documentation were developed wit
 - Composite video output
 - Active overcurrent protection — TPS2553 eFuse with a ~1.18 A resistor-programmed limit, soft-start and thermal shutdown, backed by a polyfuse
 - Fits inside the original NES shell at the stock RF module location
-- Bring-up test points for video, ground, +5V and audio
+- Bring-up test points for video, ground, +5V and audio, silkscreen-labelled
 - Feed header for an external 8-pin mini-DIN RGB connector (NESRGB)
 - 2-layer PCB, designed in KiCad
 
@@ -65,6 +72,11 @@ self-limiting rather than destructive.
 
 Four through-hole test points (2.0 mm pad, 1.0 mm drill) for bring-up. They accept
 a 0.64 mm square header pin, so you can solder pins in and use scope grabbers.
+
+Each one is labelled on the silkscreen with both its refdes and its signal, so you
+can read the board without this table. (On v2's first pass the signal names sat on
+F.Fab, a documentation layer that never reaches the physical board — the silkscreen
+said only `TP1`–`TP4`.)
 
 | TP  | Net          | Location (mm) | Notes |
 |-----|--------------|---------------|-------|

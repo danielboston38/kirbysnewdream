@@ -21,6 +21,7 @@ This project's schematic design, debugging, and documentation were developed wit
 - Active overcurrent protection — TPS2553 eFuse with a ~1.18 A resistor-programmed limit, soft-start and thermal shutdown, backed by a polyfuse
 - Fits inside the original NES shell at the stock RF module location
 - Bring-up test points for video, ground, +5V and audio
+- Feed header for an external 8-pin mini-DIN RGB connector (NESRGB)
 - 2-layer PCB, designed in KiCad
 
 ## Power path
@@ -77,6 +78,38 @@ constraint — you can clip a ground lead to any B.Cu feature.
 
 To probe the buffer itself rather than its output, use Q1's emitter leg directly;
 there is no test point on `Net-(Q1-E)`.
+
+## RGB output (v2)
+
+Provision for the [NESRGB](https://etim.net.au/nesrgb/) board's RGB connector —
+the Micomsoft XRGB-mini Framemeister 8-pin mini-DIN standard.
+
+The connector itself is **not** on this board. The NESRGB kit ships it as a
+panel-mount jack that epoxies into a 12 mm hole in the shell, so this board just
+feeds it. R/G/B run directly from the NESRGB to the connector; we supply the
+other three pins on **J5**:
+
+| J5 pin | Net          | mini-DIN pin | |
+|--------|--------------|--------------|---|
+| 1 | `/RGB_VIDEO` | 3 | Composite video / sync, 75 Ω terminated |
+| 2 | `GND`        | 4 | |
+| 3 | `/5V`        | 5 | Downstream of the TPS2553, so it is current-limited |
+
+mini-DIN pins 1 and 2 are N/C; pins 6, 7 and 8 are Blue, Green and Red from the
+NESRGB. Note the standard carries no audio — that stays on the RCA jack, which is
+deliberate on Tim Worthington's part (it keeps video noise out of the audio).
+
+**Why R7 exists.** The video buffer's output (`/VIDEO_BUF`, Q1's emitter through
+C2) now feeds two outputs. Each needs its own 75 Ω source termination: R5 for the
+RCA jack, R7 for the mini-DIN. Tying both to one resistor would put two 75 Ω loads
+in parallel and halve the amplitude whenever both cables are plugged in.
+
+**Drive current caveat.** Two live outputs draw roughly twice the signal current
+from Q1's emitter. R1 sets the standing current — at 330 Ω that is about 8.6 mA,
+which is marginal against the ~8.7 mA peak two 75+75 Ω chains want, so the
+follower can clip. Use 220 Ω if you intend to run the RCA and the mini-DIN at the
+same time. One output at a time is fine either way. This is not yet measured on
+hardware; see Known Issues.
 
 ## Hardware
 

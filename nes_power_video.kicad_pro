@@ -581,6 +581,7 @@
       "netlist": "",
       "plot": "gerbers/",
       "specctra_dsn": "nes_power_video.dsn",
+      "step": "",
       "vrml": ""
     },
     "page_layout_descr_file": ""

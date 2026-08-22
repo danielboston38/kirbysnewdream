@@ -8,7 +8,7 @@ This project's schematic design, debugging, and documentation were developed wit
 
 ## Status
 
-🟢 First prototype assembled and power-tested successfully (5V confirmed clean on rail, no protection trips). Video output path not yet validated — pending R5 (75Ω) sourcing.
+🟡 First prototype assembled and power-tested successfully (5V confirmed clean on rail, no protection trips). Video output path **does not work on v1 hardware** — traced to a schematic defect in which Q1's emitter node was shorted to the +5V rail (see Known Issues). Fixed in source; v1 boards need a rework.
 
 <!-- Swap the line above for something like this once video's confirmed:
 🟢 Fully validated — power and composite video both confirmed working on hardware.
@@ -29,6 +29,7 @@ This project's schematic design, debugging, and documentation were developed wit
 
 ## Build Notes / Known Issues (v1)
 
+- **Q1 emitter node shorted to +5V (breaks video).** On fabbed v1 boards R1 has both ends on the `/5V` net, so Q1's emitter is clamped to the rail and C2 couples +5V — not video — into R5/J3. Root cause: an R2 (110Ω) was deleted from the schematic on 2026-07-04, and KiCad merged the two leftover collinear wire stubs into one wire, welding the emitter node to `/5V`. Fixed in source as of v1.1. **Rework for an existing board:** cut the trace running from R1's left pad up to the +5V rail (two traces reach that pad, at the D1 and F1 branches), then verify continuity from R1's left pad to Q1's emitter and to C2 pin 1. R1's right pad stays on +5V.
 - F1 (polyfuse) footprint field in KiCad is mislabeled as a polarized capacitor footprint despite correct value — cosmetic/documentation issue only, does not affect function. Fix planned for v2.
 - Video/audio RCA jack mounting holes are slightly asymmetric — cosmetic only, doesn't affect NES shell fit.
 - v1 silkscreen doesn't include component value labels or Q1 pin markers (E/C/B) — planned addition for v2 to ease hand-assembly.
@@ -40,6 +41,7 @@ This project's schematic design, debugging, and documentation were developed wit
 Refer to BOM.csv for exact part values and footprints. Key notes:
 - D1 (zener/TVS): cathode (banded end) toward VBUS/+5V side
 - Q1 (2SA1015, PNP): flat side facing viewer, leads down = Emitter-Collector-Base, left to right
+- R1 (300Ω): emitter load for Q1 — one end to +5V, the other to the Q1 emitter / C2 node. Not both ends to +5V.
 - F1 (polyfuse): sits with slight standoff above PCB by design — this is normal for radial-lead parts, not a defect
 - USB-C1: GCT USB4970-00-A, SMD receptacle — power-only, no data lines
 

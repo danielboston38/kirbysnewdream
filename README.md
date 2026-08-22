@@ -27,7 +27,7 @@ This project's schematic design, debugging, and documentation were developed wit
 - Composite video output
 - Active overcurrent protection — TPS2553 eFuse with a ~1.18 A resistor-programmed limit, soft-start and thermal shutdown, backed by a polyfuse
 - Fits inside the original NES shell at the stock RF module location
-- Bring-up test points for video, ground, +5V and audio, silkscreen-labelled
+- Bring-up test points for video, ground, +5V and audio, labelled on the silkscreen
 - Feed header for an external 8-pin mini-DIN RGB connector (NESRGB)
 - 2-layer PCB, designed in KiCad
 
@@ -73,10 +73,10 @@ self-limiting rather than destructive.
 Four through-hole test points (2.0 mm pad, 1.0 mm drill) for bring-up. They accept
 a 0.64 mm square header pin, so you can solder pins in and use scope grabbers.
 
-Each one is labelled on the silkscreen with both its refdes and its signal, so you
-can read the board without this table. (On v2's first pass the signal names sat on
-F.Fab, a documentation layer that never reaches the physical board — the silkscreen
-said only `TP1`–`TP4`.)
+The silkscreen carries the signal name only — `VIDEO`, `GND`, `+5V`, `AUDIO` — so
+the board reads without this table. The refdes lives on F.Fab for the fab drawings.
+(On v2's first pass this was backwards: the signal names were on F.Fab, which never
+reaches the physical board, so the silkscreen said only `TP1`–`TP4`.)
 
 | TP  | Net          | Location (mm) | Notes |
 |-----|--------------|---------------|-------|

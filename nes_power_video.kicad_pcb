@@ -894,7 +894,7 @@
 		(tags "test point THT pad")
 		(property "Reference" "TP1"
 			(at 0 -1.998 0)
-			(layer "F.SilkS")
+			(layer "F.Fab")
 			(uuid "ec909362-736a-4d0c-99fe-0a7941229c02")
 			(effects
 				(font
@@ -1970,7 +1970,7 @@
 		(tags "test point THT pad")
 		(property "Reference" "TP2"
 			(at 0 -1.998 0)
-			(layer "F.SilkS")
+			(layer "F.Fab")
 			(uuid "08904cb5-4bda-4b5b-9f53-9aff31c743e1")
 			(effects
 				(font
@@ -8175,7 +8175,7 @@
 		(tags "test point THT pad")
 		(property "Reference" "TP3"
 			(at 0 -1.998 0)
-			(layer "F.SilkS")
+			(layer "F.Fab")
 			(uuid "b1e01b5e-c7e5-40da-8879-00fba67d63fd")
 			(effects
 				(font
@@ -8185,7 +8185,7 @@
 			)
 		)
 		(property "Value" "+5V"
-			(at 0 2.4 0)
+			(at 0 -2 0)
 			(layer "F.SilkS")
 			(uuid "7dafdefd-9203-4fda-80a6-f983290f77c8")
 			(effects
@@ -8278,7 +8278,7 @@
 		(tags "test point THT pad")
 		(property "Reference" "TP4"
 			(at 0 -1.998 0)
-			(layer "F.SilkS")
+			(layer "F.Fab")
 			(uuid "4997bd83-356e-43b9-9559-e3e6be75e352")
 			(effects
 				(font
@@ -8288,7 +8288,7 @@
 			)
 		)
 		(property "Value" "AUDIO"
-			(at -1 2.4 0)
+			(at -1 -2 0)
 			(layer "F.SilkS")
 			(uuid "96f34cef-3a39-4f6e-8eae-6ceeb11a8a5c")
 			(effects

@@ -12,3 +12,4 @@ R5,Resistor,75Ω,THT,MOGAOPI,,1,,Video series termination; populated on the fabb
 R6,Resistor,22k,0805 SMD,,,1,,"Sets U1 current limit. I_OS = 25.9/R_ILIM(kohm) -> ~1.18A typ. Higher R = LOWER limit. Valid range 15k-232k"
 U1,Current-limited power switch (eFuse),TPS2553DBVR,SOT-23-6 SMD,Texas Instruments,TPS2553DBVR,1,,"Adjustable OCP between F1 and the 5V rail. EN (pin 3) active-high tied to IN. Auto-retry version (the -1 suffix is latch-off). FAULT (pin 4) left unconnected"
 USB C1,USB-C receptacle,USB4970-00-A,SMD,GCT,USB4970-00-A,1,,"6-pin power-only (VBUS x2, GND x2, CC1, CC2); no data lines"
+TP1-TP4,Test point (through-hole pad),,2.0mm pad / 1.0mm drill THT,,,4,,"Not a purchased part — bare plated holes for bring-up (video, GND, +5V, audio). Optionally fit 0.64mm square header pins for scope grabbers."

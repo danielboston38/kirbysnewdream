@@ -20,6 +20,7 @@ This project's schematic design, debugging, and documentation were developed wit
 - Composite video output
 - Active overcurrent protection — TPS2553 eFuse with a ~1.18 A resistor-programmed limit, soft-start and thermal shutdown, backed by a polyfuse
 - Fits inside the original NES shell at the stock RF module location
+- Bring-up test points for video, ground, +5V and audio
 - 2-layer PCB, designed in KiCad
 
 ## Power path
@@ -58,6 +59,24 @@ puts a forward-biased diode across the 5 V rail. Before U1 that was a near
 short relying on a polyfuse taking seconds to react. Now the eFuse current-
 limits it at ~1.18 A and thermally shuts down, so the mistake is
 self-limiting rather than destructive.
+
+## Test points (v2)
+
+Four through-hole test points (2.0 mm pad, 1.0 mm drill) for bring-up. They accept
+a 0.64 mm square header pin, so you can solder pins in and use scope grabbers.
+
+| TP  | Net          | Location (mm) | Notes |
+|-----|--------------|---------------|-------|
+| TP1 | `/VIDEO_OUT` | 62.0, 60.0    | Jack-side video, i.e. after C2 and the 75 Ω series R5 — what the TV actually sees. A high-impedance probe reads roughly double the terminated amplitude. |
+| TP2 | `GND`        | 58.5, 60.0    | Straight into the B.Cu ground pour. |
+| TP3 | `/5V`        | 52.0, 43.1    | Sits directly on the protected 5 V trunk, downstream of F1 and the TPS2553. |
+| TP4 | `/AUDIO_OUT` | 65.9, 28.35   | Audio pass-through between J4 pin 2 and J2. |
+
+The whole back layer is a ground pour, so TP2's position is a convenience, not a
+constraint — you can clip a ground lead to any B.Cu feature.
+
+To probe the buffer itself rather than its output, use Q1's emitter leg directly;
+there is no test point on `Net-(Q1-E)`.
 
 ## Hardware
 

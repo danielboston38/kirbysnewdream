@@ -161,11 +161,55 @@ Two tests that look useful but are not:
 Powered, the fastest single check is DC at Q1's emitter: roughly 1.5–3 V if
 correct, sitting at exactly the rail voltage if shorted.
 
-1. **Cut** the 0.8 mm trace leaving R1's left pad toward the **upper left**, about 5–8 mm from the pad. Leave the trace entering that pad from the upper right — that one goes to Q1's emitter and must stay. Two collinear traces (the F1 and D1 branches) overlap along that stretch, so one cut severs both. Do not cut above the point level with D1's cathode, or the rail loses its path to D1 and J4.3.
-2. **Jumper** C1's + pad to F1 pad 1 (the pad whose trace runs left toward D1, not the one toward USB-C). This puts R1's right pad on the rail so R1 becomes the emitter pull-up, and connects C1 to the rail properly.
-3. **Confirm R5 (75Ω) is populated** — it is on the author's board. Without it there is no path from C2 to the RCA jack, so if in doubt check continuity from C2's negative terminal through R5 to J3's tip.
+**R1's left pad is a star point.** Three things meet there: F1 (the source), the
+D1 + J4.3 branch (the load), and Q1's emitter. The two incoming rail traces are
+*collinear*, so a single cut severs both — which is why this needs **two**
+jumpers, not one.
 
-Verify with a meter before powering: R1 left pad to D1 cathode must now read **open**; R1 left pad to F1 pad 1 must read **~330Ω** through R1; R1 left pad must still show continuity to Q1's emitter and C2 pin 1. Powered, Q1's emitter should sit near 1.5–3V — a reading of 5V means the cut did not take.
+1. **Cut** the 0.8 mm trace leaving R1's left pad toward the **upper left**, about
+   5–8 mm from the pad. Leave the trace entering from the upper right — that is
+   Q1's emitter and must stay. Stay below the level of D1's cathode; above that
+   point only one of the two overlapping traces is present, and you need both cut.
+
+2. **Two jumpers.** The cut leaves three islands that must all become one rail:
+
+   | Island | Pads |
+   |---|---|
+   | A | C1's **+** pad, R1's **right** pad |
+   | B | F1 pad 1 (left pad, trace toward D1 — not the USB-C side) |
+   | C | D1's cathode (K), J4 pin 3 |
+
+   Any two wires joining all three work. One wire per pad:
+   - **C1+ → F1 pad 1** (~14 mm)
+   - **R1's right pad → D1 cathode** (~25 mm)
+
+   Do this with R1 removed — its right pad is far easier to solder empty.
+
+3. **Fit R1 = 300–330 Ω.** Check the part before fitting: R1, R3, R4, R5 (and R7
+   on v2) all share the same `R_Axial_DIN0207` footprint in four different values,
+   and the v1 silkscreen prints no values. At least one board was built with a
+   5.1 kΩ from the R3/R4 pile in R1, which gives ~0.6 mA of standing current
+   instead of ~9 mA — enough to look plausible and still produce no usable video.
+
+4. **Confirm R5 (75Ω) is populated.** Across R5's own pads should read ~75 Ω; it
+   has no parallel path in circuit (C2 blocks DC on one side, the jack is open on
+   the other), so it doubles as a meter sanity check.
+
+5. **Fit the transistor last.** Powering the board before the cut is done drives
+   Q1 into saturation from the rail straight to ground with no current limit — see
+   below.
+
+Verify with a meter before powering: R1's left pad to D1 cathode must now read
+**open**; R1's left pad to F1 pad 1 must read **~330Ω** through R1; R1's left pad
+must still show continuity to Q1's emitter and C2 pin 1; and D1's cathode must
+read **~0 Ω** to J4 pin 3 *and* to F1 pad 1. Powered, Q1's emitter should sit near
+1.5–3V — a reading of 5V means the cut did not take.
+
+**The short destroys transistors.** With the emitter clamped to +5 V and the base
+at the NES's video level, the B-E junction is forward-biased by 3–4 V, so Q1
+saturates with its collector tied directly to ground and nothing limiting the
+current. Q1 is a 150 mA part; F1 does not trip until 3.8 A. Every power-up in that
+state risks another transistor, which is the likely fate of the first one.
 - F1 (polyfuse) footprint field in KiCad is mislabeled as a polarized capacitor footprint despite correct value — cosmetic/documentation issue only, does not affect function. Fix planned for v2.
 - Video/audio RCA jack mounting holes are slightly asymmetric — cosmetic only, doesn't affect NES shell fit.
 - v1 silkscreen doesn't include component value labels or Q1 pin markers (E/C/B) — planned addition for v2 to ease hand-assembly.

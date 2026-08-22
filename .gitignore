@@ -6,3 +6,11 @@ _autosave-*
 *.lck
 ~*.lck
 *-backups/
+
+# KiCad Local History (File > Local History) - its own nested git repo,
+# committed as a gitlink by mistake. Keep the folder, don't track it.
+.history/
+
+# Stray empty stub sheets from a "new sheet" saved with a blank filename
+.kicad_sch
+.kicad_sch.kicad_sch

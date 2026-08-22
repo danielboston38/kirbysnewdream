@@ -8,7 +8,7 @@ Q1,PNP transistor,2SA1015,TO-92 THT,MCC,2SA1015,1,,"Flat side facing viewer, lea
 R1,Resistor,300Ω (design value),THT,MOGAOPI,,1,,"Q1 emitter load: one end +5V, other end to Q1 emitter/C2 node. Built with 330Ω substitute (~10% off, acceptable)"
 R3,Resistor,5.1kΩ,THT,MOGAOPI,,1,,CC1 pulldown; measured 5.07kΩ
 R4,Resistor,5.1kΩ,THT,MOGAOPI,,1,,CC2 pulldown; measured 5.13kΩ
-R5,Resistor,75Ω,THT,MOGAOPI,,1,,Video series termination; not yet sourced as of this BOM
+R5,Resistor,75Ω,THT,MOGAOPI,,1,,Video series termination; populated on the fabbed v1 board
 R6,Resistor,22k,0805 SMD,,,1,,"Sets U1 current limit. I_OS = 25.9/R_ILIM(kohm) -> ~1.18A typ. Higher R = LOWER limit. Valid range 15k-232k"
 U1,Current-limited power switch (eFuse),TPS2553DBVR,SOT-23-6 SMD,Texas Instruments,TPS2553DBVR,1,,"Adjustable OCP between F1 and the 5V rail. EN (pin 3) active-high tied to IN. Auto-retry version (the -1 suffix is latch-off). FAULT (pin 4) left unconnected"
 USB C1,USB-C receptacle,USB4970-00-A,SMD,GCT,USB4970-00-A,1,,"6-pin power-only (VBUS x2, GND x2, CC1, CC2); no data lines"

@@ -53,6 +53,12 @@ always on. FAULT (pin 4) is an open-drain output left unconnected — there is
 nothing inside a closed NES shell to indicate to. If you want fault
 indication, it can sink 25 mA directly.
 
+A useful side effect: D1 is a unidirectional TVS, so fitting it backwards
+puts a forward-biased diode across the 5 V rail. Before U1 that was a near
+short relying on a polyfuse taking seconds to react. Now the eFuse current-
+limits it at ~1.18 A and thermally shuts down, so the mistake is
+self-limiting rather than destructive.
+
 ## Hardware
 
 - Designed in KiCad (schematic + PCB source included in this repo)
@@ -65,8 +71,8 @@ indication, it can sink 25 mA directly.
 - F1 (polyfuse) footprint field in KiCad is mislabeled as a polarized capacitor footprint despite correct value — cosmetic/documentation issue only, does not affect function. Fix planned for v2.
 - Video/audio RCA jack mounting holes are slightly asymmetric — cosmetic only, doesn't affect NES shell fit.
 - v1 silkscreen doesn't include component value labels or Q1 pin markers (E/C/B) — planned addition for v2 to ease hand-assembly.
-- D1 (TVS) sits on the output side of U1, so it clamps the 5V rail but does not protect the eFuse's own input against hot-plug transients. Moving it to the `/fused_5v` node (between F1 and U1) would protect both, since the polyfuse would then limit TVS current during a sustained overvoltage. Deferred — it means relocating a part on already-validated hardware.
-- The schematic still carries `Diode:1.5KExxA` (DO-201AE, 1500W TVS) for D1 while the BOM specifies a 1N4733A 5.6V zener in DO-41. These disagree; the fitted part is the 1N4733A. Needs reconciling in v2.
+- **D1 does not protect U1.** The fitted TVS is a 1.5KE6.8A: stand-off 5.80 V, breakdown 6.45–7.14 V at 10 mA, clamping 10.5 V at 143 A. The TPS2553's absolute maximum on IN and OUT is 7 V, so the TVS has barely begun conducting by the time the eFuse is already out of spec, and under a real surge it lets the rail reach 10.5 V. D1 protects the console downstream; it will not save U1. Repositioning D1 doesn't help — both U1 pins share the same 7 V rating — and no avalanche TVS clamps below 7 V while standing off USB-C's 5.5 V worst case. Proper protection needs a switch with integrated overvoltage cutoff. Deferred to v2.
+- D1's symbol (`Diode:1.5KExxA`) names both pins A1/A2 and draws no cathode — KiCad uses identical pin naming for the unidirectional and bidirectional variants of this part. Polarity comes only from the footprint silkscreen band, which is at the pad-1 (+5 V) end and is correct. Watch this when hand-assembling.
 
 ## Assembly
 

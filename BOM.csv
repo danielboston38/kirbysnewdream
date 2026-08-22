@@ -2,7 +2,7 @@ Reference,Description,Value,Package/Footprint,Manufacturer,Manufacturer Part Num
 C1,Electrolytic capacitor,100µF 16V,Radial THT,MOGAOPI,,1,,Bulk cap on switched 5V rail to GND
 C2,Electrolytic capacitor,100µF 16V,Radial THT,MOGAOPI,,1,,Coupling cap; blocks DC bias from Q1 emitter before RCA jack
 C3,Ceramic capacitor,100nF,0805 SMD,,,1,,"X7R 16V+; U1 input decoupling - mount as close to U1 pin 1 as possible (TI datasheet requirement)"
-D1,Zener/TVS diode,5.6V,DO-41 THT,Littelfuse,1N4733A,1,,Cathode (banded end) toward VBUS/+5V side
+D1,TVS diode (1500W unidirectional),1.5KE6.8A,DO-201AE THT,Vishay,1.5KE6.8A,1,,"VWM 5.80V / VBR 6.45-7.14V @10mA / VC 10.5V @143A. Cathode (banded end) toward +5V - the KiCad symbol names both pins A1/A2 and shows no polarity, but the footprint silkscreen has the band. Clamps above U1 absolute max 7V, so it protects the NES, not the eFuse"
 F1,PTC resettable polyfuse,IH=2.0A / IT=3.8A / VMAX=16V,Radial disc THT,Littelfuse,RHEF200,1,,Non-polarized; backup protection upstream of U1 eFuse. KiCad footprint field mislabeled as polarized cap footprint in v1 (fix in v2)
 Q1,PNP transistor,2SA1015,TO-92 THT,MCC,2SA1015,1,,"Flat side facing viewer, leads down = E-C-B left to right. Base=video in, Emitter=R1/C2 net, Collector=GND"
 R1,Resistor,300Ω (design value),THT,MOGAOPI,,1,,"Q1 emitter load: one end +5V, other end to Q1 emitter/C2 node. Built with 330Ω substitute (~10% off, acceptable)"

@@ -104,12 +104,16 @@ C2) now feeds two outputs. Each needs its own 75 Ω source termination: R5 for t
 RCA jack, R7 for the mini-DIN. Tying both to one resistor would put two 75 Ω loads
 in parallel and halve the amplitude whenever both cables are plugged in.
 
-**Drive current caveat.** Two live outputs draw roughly twice the signal current
-from Q1's emitter. R1 sets the standing current — at 330 Ω that is about 8.6 mA,
-which is marginal against the ~8.7 mA peak two 75+75 Ω chains want, so the
-follower can clip. Use 220 Ω if you intend to run the RCA and the mini-DIN at the
-same time. One output at a time is fine either way. This is not yet measured on
-hardware; see Known Issues.
+**One output at a time.** Composite and RGB are an either/or — the design does not
+target using both at once, and R1 stays at 330 Ω. Whichever cable is plugged sees
+a correct 75 Ω source, and the unused branch is an unloaded stub.
+
+If both are ever plugged in simultaneously, R7 means each still gets a properly
+terminated 75 Ω source rather than the halved amplitude you'd get from sharing one
+resistor. Q1's drive is the limit in that case: R1 at 330 Ω gives roughly 8.6 mA
+standing current against the ~8.7 mA peak two 75+75 Ω chains want, so the follower
+would sit right at the edge of clipping. 220 Ω would clear it. Not measured on
+hardware, and not a supported mode.
 
 ## Hardware
 

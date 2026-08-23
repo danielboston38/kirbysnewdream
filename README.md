@@ -2,6 +2,10 @@
 
 A custom composite video / USB-C power replacement board for the original Nintendo Entertainment System (NES). Drops in at the original RF module location inside the NES shell, replacing the RF modulator with a clean composite video + USB-C power solution.
 
+<a href="https://certification.oshwa.org/us002842.html">
+  <img src="./certification-mark-US002842-stacked.svg" alt="OSHWA Certified Open Source Hardware UID US002842" width="140" align="right">
+</a>
+
 > **Renamed.** This project shipped its first revision as **Kirby's New Dream**.
 > From v2 onward it is **Link to Video**. Anything referring to the old name —
 > the v1 board silkscreen, the 2026-07-16 PCBWay fab package under
@@ -229,6 +233,22 @@ Refer to BOM.csv for exact part values and footprints. Key notes:
 - U1 (TPS2553, SOT-23-6): pin 1 is IN, marked by the dot on the package. Pin order is IN, GND, EN down one side and OUT, ILIM, FAULT up the other. Order the plain TPS2553DBVR — the `-1` suffix is the latch-off variant, which would need a power cycle after every trip instead of retrying automatically.
 - C3 (100nF, 0805): TI requires this as close to U1 pin 1 as the layout allows. It sits immediately left of U1.
 - R6 (22k, 0805): sets the current limit — see the table above before substituting.
+
+## Certification
+
+This project is **OSHWA-certified open source hardware**, UID **[US002842](https://certification.oshwa.org/us002842.html)**.
+
+The certification confirms that the design files, schematics, PCB layout, bill of
+materials and documentation in this repository are published under an
+OSI/FSF-approved open licence and are complete enough for someone else to study,
+modify, manufacture and distribute the hardware. See the
+[OSHWA certification directory entry](https://certification.oshwa.org/us002842.html)
+for the registered details.
+
+The certification mark above is
+[`certification-mark-US002842-stacked.svg`](./certification-mark-US002842-stacked.svg),
+issued by OSHWA for this UID. It applies to this design only — it is not
+transferable to derivatives, which need their own certification.
 
 ## License
 

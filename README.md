@@ -1,6 +1,17 @@
-# Kirby's New Dream
+# Link to Video
 
 A custom composite video / USB-C power replacement board for the original Nintendo Entertainment System (NES). Drops in at the original RF module location inside the NES shell, replacing the RF modulator with a clean composite video + USB-C power solution.
+
+<a href="https://certification.oshwa.org/us002842.html">
+  <img src="./certification-mark-US002842-stacked.svg" alt="OSHWA Certified Open Source Hardware UID US002842" width="140" align="right">
+</a>
+
+> **Renamed.** This project shipped its first revision as **Kirby's New Dream**.
+> From v2 onward it is **Link to Video**. Anything referring to the old name —
+> the v1 board silkscreen, the 2026-07-16 PCBWay fab package under
+> [`pcbway_production/`](./pcbway_production), and older commits — is the same
+> project. The GitHub repository was renamed to match; the previous
+> `kirbysnewdream` URL still redirects.
 
 ## Disclosure
 
@@ -20,6 +31,8 @@ This project's schematic design, debugging, and documentation were developed wit
 - Composite video output
 - Active overcurrent protection — TPS2553 eFuse with a ~1.18 A resistor-programmed limit, soft-start and thermal shutdown, backed by a polyfuse
 - Fits inside the original NES shell at the stock RF module location
+- Bring-up test points for video, ground, +5V and audio, labelled on the silkscreen
+- Feed header for an external 8-pin mini-DIN RGB connector (NESRGB)
 - 2-layer PCB, designed in KiCad
 
 ## Power path
@@ -59,6 +72,65 @@ short relying on a polyfuse taking seconds to react. Now the eFuse current-
 limits it at ~1.18 A and thermally shuts down, so the mistake is
 self-limiting rather than destructive.
 
+## Test points (v2)
+
+Four through-hole test points (2.0 mm pad, 1.0 mm drill) for bring-up. They accept
+a 0.64 mm square header pin, so you can solder pins in and use scope grabbers.
+
+The silkscreen carries the signal name only — `VIDEO`, `GND`, `+5V`, `AUDIO` — so
+the board reads without this table. The refdes lives on F.Fab for the fab drawings.
+(On v2's first pass this was backwards: the signal names were on F.Fab, which never
+reaches the physical board, so the silkscreen said only `TP1`–`TP4`.)
+
+| TP  | Net          | Location (mm) | Notes |
+|-----|--------------|---------------|-------|
+| TP1 | `/VIDEO_OUT` | 62.0, 60.0    | Jack-side video, i.e. after C2 and the 75 Ω series R5 — what the TV actually sees. A high-impedance probe reads roughly double the terminated amplitude. |
+| TP2 | `GND`        | 58.5, 60.0    | Straight into the B.Cu ground pour. |
+| TP3 | `/5V`        | 52.0, 43.1    | Sits directly on the protected 5 V trunk, downstream of F1 and the TPS2553. |
+| TP4 | `/AUDIO_OUT` | 65.9, 28.35   | Audio pass-through between J4 pin 2 and J2. |
+
+The whole back layer is a ground pour, so TP2's position is a convenience, not a
+constraint — you can clip a ground lead to any B.Cu feature.
+
+To probe the buffer itself rather than its output, use Q1's emitter leg directly;
+there is no test point on `Net-(Q1-E)`.
+
+## RGB output (v2)
+
+Provision for the [NESRGB](https://etim.net.au/nesrgb/) board's RGB connector —
+the Micomsoft XRGB-mini Framemeister 8-pin mini-DIN standard.
+
+The connector itself is **not** on this board. The NESRGB kit ships it as a
+panel-mount jack that epoxies into a 12 mm hole in the shell, so this board just
+feeds it. R/G/B run directly from the NESRGB to the connector; we supply the
+other three pins on **J5**:
+
+| J5 pin | Net          | mini-DIN pin | |
+|--------|--------------|--------------|---|
+| 1 | `/RGB_VIDEO` | 3 | Composite video / sync, 75 Ω terminated |
+| 2 | `GND`        | 4 | |
+| 3 | `/5V`        | 5 | Downstream of the TPS2553, so it is current-limited |
+
+mini-DIN pins 1 and 2 are N/C; pins 6, 7 and 8 are Blue, Green and Red from the
+NESRGB. Note the standard carries no audio — that stays on the RCA jack, which is
+deliberate on Tim Worthington's part (it keeps video noise out of the audio).
+
+**Why R7 exists.** The video buffer's output (`/VIDEO_BUF`, Q1's emitter through
+C2) now feeds two outputs. Each needs its own 75 Ω source termination: R5 for the
+RCA jack, R7 for the mini-DIN. Tying both to one resistor would put two 75 Ω loads
+in parallel and halve the amplitude whenever both cables are plugged in.
+
+**One output at a time.** Composite and RGB are an either/or — the design does not
+target using both at once, and R1 stays at 330 Ω. Whichever cable is plugged sees
+a correct 75 Ω source, and the unused branch is an unloaded stub.
+
+If both are ever plugged in simultaneously, R7 means each still gets a properly
+terminated 75 Ω source rather than the halved amplitude you'd get from sharing one
+resistor. Q1's drive is the limit in that case: R1 at 330 Ω gives roughly 8.6 mA
+standing current against the ~8.7 mA peak two 75+75 Ω chains want, so the follower
+would sit right at the edge of clipping. 220 Ω would clear it. Not measured on
+hardware, and not a supported mode.
+
 ## Hardware
 
 - Designed in KiCad (schematic + PCB source included in this repo)
@@ -71,11 +143,77 @@ self-limiting rather than destructive.
 
 That revision has two defects — Q1's emitter is clamped to the rail, *and* C1 only reaches the rail through R1, so the bulk cap decouples nothing. Both are fixed together:
 
-1. **Cut** the 0.8 mm trace leaving R1's left pad toward the **upper left**, about 5–8 mm from the pad. Leave the trace entering that pad from the upper right — that one goes to Q1's emitter and must stay. Two collinear traces (the F1 and D1 branches) overlap along that stretch, so one cut severs both. Do not cut above the point level with D1's cathode, or the rail loses its path to D1 and J4.3.
-2. **Jumper** C1's + pad to F1 pad 1 (the pad whose trace runs left toward D1, not the one toward USB-C). This puts R1's right pad on the rail so R1 becomes the emitter pull-up, and connects C1 to the rail properly.
-3. **Confirm R5 (75Ω) is populated** — it is on the author's board. Without it there is no path from C2 to the RCA jack, so if in doubt check continuity from C2's negative terminal through R5 to J3's tip.
+**Confirm the diagnosis before you cut.** Power off, unplugged, caps discharged.
+Probe +5 V at J4 pin 3 or D1's K-marked lead. Two measurements, mirror images of
+each other:
 
-Verify with a meter before powering: R1 left pad to D1 cathode must now read **open**; R1 left pad to F1 pad 1 must read **~330Ω** through R1; R1 left pad must still show continuity to Q1's emitter and C2 pin 1. Powered, Q1's emitter should sit near 1.5–3V — a reading of 5V means the cut did not take.
+| Measurement | Defective board | Correctly wired |
+|---|---|---|
+| Q1 emitter → +5 V | **~0 Ω** | ~330 Ω (R1) |
+| C1 **+** terminal → +5 V | **~330 Ω** (stranded behind R1) | ~0 Ω |
+
+After the rework these swap. To identify Q1's legs without relying on the TO-92
+orientation: the leg reading 0 Ω to GND is the collector, the leg with continuity
+to J4 pin 1 is the base, and the remaining one is the emitter.
+
+Two tests that look useful but are not:
+
+- **Emitter → J3 tip.** C2 blocks DC, so this reads open either way.
+- **C1 + → Q1 emitter.** Reads ~330 Ω on a good board *and* a bad one, because R1
+  sits between them in both wirings. It cannot distinguish the two.
+
+Powered, the fastest single check is DC at Q1's emitter: roughly 1.5–3 V if
+correct, sitting at exactly the rail voltage if shorted.
+
+**R1's left pad is a star point.** Three things meet there: F1 (the source), the
+D1 + J4.3 branch (the load), and Q1's emitter. The two incoming rail traces are
+*collinear*, so a single cut severs both — which is why this needs **two**
+jumpers, not one.
+
+1. **Cut** the 0.8 mm trace leaving R1's left pad toward the **upper left**, about
+   5–8 mm from the pad. Leave the trace entering from the upper right — that is
+   Q1's emitter and must stay. Stay below the level of D1's cathode; above that
+   point only one of the two overlapping traces is present, and you need both cut.
+
+2. **Two jumpers.** The cut leaves three islands that must all become one rail:
+
+   | Island | Pads |
+   |---|---|
+   | A | C1's **+** pad, R1's **right** pad |
+   | B | F1 pad 1 (left pad, trace toward D1 — not the USB-C side) |
+   | C | D1's cathode (K), J4 pin 3 |
+
+   Any two wires joining all three work. One wire per pad:
+   - **C1+ → F1 pad 1** (~14 mm)
+   - **R1's right pad → D1 cathode** (~25 mm)
+
+   Do this with R1 removed — its right pad is far easier to solder empty.
+
+3. **Fit R1 = 300–330 Ω.** Check the part before fitting: R1, R3, R4, R5 (and R7
+   on v2) all share the same `R_Axial_DIN0207` footprint in four different values,
+   and the v1 silkscreen prints no values. At least one board was built with a
+   5.1 kΩ from the R3/R4 pile in R1, which gives ~0.6 mA of standing current
+   instead of ~9 mA — enough to look plausible and still produce no usable video.
+
+4. **Confirm R5 (75Ω) is populated.** Across R5's own pads should read ~75 Ω; it
+   has no parallel path in circuit (C2 blocks DC on one side, the jack is open on
+   the other), so it doubles as a meter sanity check.
+
+5. **Fit the transistor last.** Powering the board before the cut is done drives
+   Q1 into saturation from the rail straight to ground with no current limit — see
+   below.
+
+Verify with a meter before powering: R1's left pad to D1 cathode must now read
+**open**; R1's left pad to F1 pad 1 must read **~330Ω** through R1; R1's left pad
+must still show continuity to Q1's emitter and C2 pin 1; and D1's cathode must
+read **~0 Ω** to J4 pin 3 *and* to F1 pad 1. Powered, Q1's emitter should sit near
+1.5–3V — a reading of 5V means the cut did not take.
+
+**The short destroys transistors.** With the emitter clamped to +5 V and the base
+at the NES's video level, the B-E junction is forward-biased by 3–4 V, so Q1
+saturates with its collector tied directly to ground and nothing limiting the
+current. Q1 is a 150 mA part; F1 does not trip until 3.8 A. Every power-up in that
+state risks another transistor, which is the likely fate of the first one.
 - F1 (polyfuse) footprint field in KiCad is mislabeled as a polarized capacitor footprint despite correct value — cosmetic/documentation issue only, does not affect function. Fix planned for v2.
 - Video/audio RCA jack mounting holes are slightly asymmetric — cosmetic only, doesn't affect NES shell fit.
 - v1 silkscreen doesn't include component value labels or Q1 pin markers (E/C/B) — planned addition for v2 to ease hand-assembly.
@@ -95,6 +233,22 @@ Refer to BOM.csv for exact part values and footprints. Key notes:
 - U1 (TPS2553, SOT-23-6): pin 1 is IN, marked by the dot on the package. Pin order is IN, GND, EN down one side and OUT, ILIM, FAULT up the other. Order the plain TPS2553DBVR — the `-1` suffix is the latch-off variant, which would need a power cycle after every trip instead of retrying automatically.
 - C3 (100nF, 0805): TI requires this as close to U1 pin 1 as the layout allows. It sits immediately left of U1.
 - R6 (22k, 0805): sets the current limit — see the table above before substituting.
+
+## Certification
+
+This project is **OSHWA-certified open source hardware**, UID **[US002842](https://certification.oshwa.org/us002842.html)**.
+
+The certification confirms that the design files, schematics, PCB layout, bill of
+materials and documentation in this repository are published under an
+OSI/FSF-approved open licence and are complete enough for someone else to study,
+modify, manufacture and distribute the hardware. See the
+[OSHWA certification directory entry](https://certification.oshwa.org/us002842.html)
+for the registered details.
+
+The certification mark above is
+[`certification-mark-US002842-stacked.svg`](./certification-mark-US002842-stacked.svg),
+issued by OSHWA for this UID. It applies to this design only — it is not
+transferable to derivatives, which need their own certification.
 
 ## License
 

@@ -1,0 +1,45 @@
+(version 1)
+
+# Custom design rules for Link to Video.
+#
+# These are the geometric half of the safety net. They cannot check that a pad
+# is on the *correct* net -- DRC has no view of design intent, which is why the
+# v1 emitter-to-rail fault passed both ERC and DRC cleanly. Net assignment is
+# checked separately by tools/check_nets.py; run that too.
+#
+# What these rules do catch is the layout-adjacency version of the same
+# mistake: the emitter node and the +5V rail drifting close enough together
+# that a solder bridge, a whisker or an over-etched gap ties them. On v1 that
+# short existed in copper and destroyed three transistors.
+
+(rule "Q1 emitter node clear of the +5V rail"
+	(constraint clearance (min 0.5mm))
+	(condition "A.NetName == 'Net-(Q1-E)' && B.NetName == '/5V'")
+)
+
+(rule "Q1 emitter node clear of the fused rail"
+	(constraint clearance (min 0.5mm))
+	(condition "A.NetName == 'Net-(Q1-E)' && B.NetName == '/fused_5v'")
+)
+
+(rule "Q1 base node clear of the +5V rail"
+	(constraint clearance (min 0.5mm))
+	(condition "A.NetName == 'Net-(Q1-B)' && B.NetName == '/5V'")
+)
+
+# The two USB-C configuration channels are the other pair that must never meet.
+# Bridging them puts 2.55k on CC instead of 5.1k, which falls below the source's
+# vRd-Connect threshold -- the supply then never enables VBUS and the board looks
+# completely dead, with no voltage and no current draw anywhere. This happened on
+# the prototype.
+#
+# Note the pad exclusion. The receptacle's CC1 and CC2 are its two centre pads and
+# sit on a fixed 0.3mm gap that no layout change can widen, so the rule would fire
+# on the part itself. The prototype's bridge was solder across those pads -- an
+# assembly defect DRC cannot prevent. What this rule does protect is the routing:
+# CC2 runs 27mm across the board and CC1 15mm, and those are free to be spaced.
+
+(rule "CC1 clear of CC2 (routing only)"
+	(constraint clearance (min 0.4mm))
+	(condition "A.NetName == 'Net-(USB-C1-CC1)' && B.NetName == 'Net-(USB-C1-CC2)' && A.Type != 'Pad' && B.Type != 'Pad'")
+)

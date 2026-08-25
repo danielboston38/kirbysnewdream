@@ -1,6 +1,6 @@
 # Link to Video
 
-A custom composite video / USB-C power replacement board for the original Nintendo Entertainment System (NES). Drops in at the original RF module location inside the NES shell, replacing the RF modulator with a clean composite video + USB-C power solution.
+A replacement for the RF modulator in the original Nintendo Entertainment System (NES-001). Drops into the stock RF module slot inside the shell and provides composite video and USB-C power in place of a part that fails by design.
 
 <a href="https://certification.oshwa.org/us002842.html">
   <img src="./certification-mark-US002842-stacked.svg" alt="OSHWA Certified Open Source Hardware UID US002842" width="140" align="right">
@@ -12,6 +12,22 @@ A custom composite video / USB-C power replacement board for the original Ninten
 > [`pcbway_production/`](./pcbway_production), and older commits — is the same
 > project. The GitHub repository was renamed to match; the previous
 > `kirbysnewdream` URL still redirects.
+
+## Why this board exists
+
+The NES-001's RF modulator already carries composite video, so this isn't about
+adding an output the console lacks. It's about replacing a part that reliably
+destroys itself.
+
+Nintendo packed the modulator's regulator and RF stages into a sealed can with no
+ventilation. It cooks its own electrolytics, they leak, and the electrolyte eats
+the traces underneath. Across three NES-001 units on the author's bench, **all
+three** had modulator failures from exactly this — including a Mitsumi unit that
+looked pristine externally and had every capacitor leaking inside.
+
+So the modulator is a consumable on a forty-year-old console, and the usual
+options are to recap a corroded board or to fit an aftermarket board. This is the
+second option, with the power input modernised to USB-C while the slot is open.
 
 ## Disclosure
 
@@ -33,6 +49,7 @@ This project's schematic design, debugging, and documentation were developed wit
 - Fits inside the original NES shell at the stock RF module location
 - Bring-up test points for video, ground, +5V and audio, labelled on the silkscreen
 - Feed header for an external 8-pin mini-DIN RGB connector (NESRGB)
+- All resistor and capacitor values printed on the silkscreen — the v1 board had four identical unlabelled axial footprints carrying four different values, which caused three separate wrong-resistor build errors
 - 2-layer PCB, designed in KiCad
 
 ## Power path
@@ -216,9 +233,65 @@ current. Q1 is a 150 mA part; F1 does not trip until 3.8 A. Every power-up in th
 state risks another transistor, which is the likely fate of the first one.
 - F1 (polyfuse) footprint field in KiCad is mislabeled as a polarized capacitor footprint despite correct value — cosmetic/documentation issue only, does not affect function. Fix planned for v2.
 - Video/audio RCA jack mounting holes are slightly asymmetric — cosmetic only, doesn't affect NES shell fit.
-- v1 silkscreen doesn't include component value labels or Q1 pin markers (E/C/B) — planned addition for v2 to ease hand-assembly.
+- v1 silkscreen doesn't include component value labels or Q1 pin markers (E/C/B). **Values are on the silkscreen from v2.** On v1 this caused three separate wrong-resistor errors in R1 (a 5.1kΩ and an 820Ω both fitted before the right value went in) because R1/R3/R4/R5/R7 share one footprint across four values. Q1 pin markers are still outstanding.
 - **D1 does not protect U1.** The fitted TVS is a 1.5KE6.8A: stand-off 5.80 V, breakdown 6.45–7.14 V at 10 mA, clamping 10.5 V at 143 A. The TPS2553's absolute maximum on IN and OUT is 7 V, so the TVS has barely begun conducting by the time the eFuse is already out of spec, and under a real surge it lets the rail reach 10.5 V. D1 protects the console downstream; it will not save U1. Repositioning D1 doesn't help — both U1 pins share the same 7 V rating — and no avalanche TVS clamps below 7 V while standing off USB-C's 5.5 V worst case. Proper protection needs a switch with integrated overvoltage cutoff. Deferred to v2.
 - D1's symbol (`Diode:1.5KExxA`) names both pins A1/A2 and draws no cathode — KiCad uses identical pin naming for the unidirectional and bidirectional variants of this part. Polarity comes only from the footprint silkscreen band, which is at the pad-1 (+5 V) end and is correct. Watch this when hand-assembling.
+
+## Video input biasing
+
+Q1's base is DC-coupled straight to the NES video line, with no bias network on
+this board. That is deliberate, and it took a long bench session to establish
+why it works.
+
+**The NES mainboard supplies a 1 kΩ pulldown on its video output pin.** Measured
+in circuit at 0.999 kΩ, identical with the meter leads both ways — a real
+resistor, not a semiconductor junction. Q1's base sources roughly 46 µA, which
+that 1 kΩ absorbs in about 46 mV. The base cannot float up and Q1 cannot cut off.
+
+This is the same reason Nintendo's own modulator has no base pulldown either. It
+also matches the load Nintendo presented on that pin: a 330 Ω series resistor
+into a 5.6 kΩ / 330 Ω divider, roughly 500 Ω in total. The NES is built to drive
+a few hundred ohms.
+
+**So no base pulldown, and no input coupling cap.** If you are adapting this
+design to something other than an NES-001, measure that pin to ground first —
+if it reads open, you need a pulldown (~47 kΩ) and this board does not have one.
+
+**R2 (330 Ω) is not a bias resistor.** It sits in series between J4 pin 1 and
+Q1's base, mirroring the 330 Ω Nintendo places in the same position. Against
+Q1's ~21 kΩ base input impedance it costs nothing in signal terms; what it buys
+is fault-current limiting into the base-emitter junction, whose reverse rating
+is only 5 V.
+
+## Design checks
+
+Two safety nets sit alongside ERC and DRC, both aimed at faults this board has
+actually shipped with.
+
+### `tools/check_nets.py`
+
+```
+python3 tools/check_nets.py
+```
+
+Exports the schematic netlist, reads the PCB's pad nets, confirms the two agree,
+and asserts a set of invariants — chief among them that **Q1's emitter is not on
+any power net**. That was the v1 fault: the emitter follower's output was tied
+to +5V along with J4.3, D1.1 and F1.1, so Q1 saturated into a grounded collector
+with nothing limiting the current. It destroyed a transistor on every power-up.
+
+**ERC and DRC both passed cleanly on that board.** Neither can see that a net is
+*wrong*, only that it is internally consistent — which is exactly why this check
+exists. Run it before generating a fab package. Gerbers carry no net information,
+so once you have them the mistake is invisible.
+
+### `nes_power_video.kicad_dru`
+
+Custom DRC rules covering the geometric half: extra clearance between Q1's
+emitter and base nodes and the supply rails, and between the two USB-C
+configuration channels. These catch the layout-adjacency version of the same
+mistakes. They cannot catch a wrong net assignment — DRC has no view of design
+intent — which is what the script above is for.
 
 ## Assembly
 
@@ -226,8 +299,11 @@ state risks another transistor, which is the likely fate of the first one.
 
 Refer to BOM.csv for exact part values and footprints. Key notes:
 - D1 (zener/TVS): cathode (banded end) toward VBUS/+5V side
-- Q1 (2SA1015, PNP): flat side facing viewer, leads down = Emitter-Collector-Base, left to right
-- R1 (300Ω): emitter load for Q1 — one end to +5V, the other to the Q1 emitter / C2 node. Not both ends to +5V.
+- Q1 (2SA1015, PNP): flat side facing viewer, leads down = Emitter-Collector-Base, left to right. The 2SA1015 is obsolete and the market carries relabelled parts — source the **KSA1015** (onsemi), same E-C-B pinout, still in production. Do not drop in a 2N3906 or BC557 without re-checking the pinout; both differ.
+- R1 (220Ω): emitter load for Q1 — one end to +5V, the other to the Q1 emitter / C2 node. Not both ends to +5V. Raised from 300Ω in v2: at the assumed ~1.3 V base, 300–330Ω supplies only ~6.2 mA at peak white against the ~6.7 mA the 150Ω load wants. Retune if the measured DC at J4 pin 1 differs from ~1.3 V.
+- R2 (330Ω): series resistor in the video input line, between J4 pin 1 and Q1's base. See [Video input biasing](#video-input-biasing).
+- **Trim all through-hole leads flush.** The board sits in the RF module slot with shielding immediately below it. Long clipped leads on the underside will short against the can — on the prototype this presented as an intermittent supply trip that only appeared when the board was moved.
+- C2 (470µF): not 100µF. Into the 150Ω load, 100µF gives τ=15 ms against the 16.7 ms field period and tilts the picture top to bottom. 470µF gives τ=70 ms.
 - F1 (polyfuse): sits with slight standoff above PCB by design — this is normal for radial-lead parts, not a defect
 - USB-C1: GCT USB4970-00-A, SMD receptacle — power-only, no data lines
 - U1 (TPS2553, SOT-23-6): pin 1 is IN, marked by the dot on the package. Pin order is IN, GND, EN down one side and OUT, ILIM, FAULT up the other. Order the plain TPS2553DBVR — the `-1` suffix is the latch-off variant, which would need a power cycle after every trip instead of retrying automatically.

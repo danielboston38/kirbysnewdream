@@ -1,16 +1,17 @@
 Reference,Description,Value,Package/Footprint,Manufacturer,Manufacturer Part Number,Quantity,Supplier Link,Notes
 C1,Electrolytic capacitor,100µF 16V,Radial THT,MOGAOPI,,1,,Bulk cap on switched 5V rail to GND
-C2,Electrolytic capacitor,100µF 16V,Radial THT,MOGAOPI,,1,,Coupling cap; blocks DC bias from Q1 emitter before RCA jack
-C3,Ceramic capacitor,100nF,0805 SMD,,,1,,"X7R 16V+; U1 input decoupling - mount as close to U1 pin 1 as possible (TI datasheet requirement)"
+C2,Electrolytic capacitor,470µF 16V,Radial THT,MOGAOPI,,1,,"Coupling cap; blocks DC bias from Q1 emitter before RCA jack. 470µF not 100µF: into the 150Ω load (R5 75Ω + TV 75Ω) 100µF gives τ=15ms against the 16.7ms field period, which tilts the picture top-to-bottom. 470µF gives τ=70ms."
+C3,Ceramic capacitor,100nF,0805 SMD,,,1,,X7R 16V+; U1 input decoupling - mount as close to U1 pin 1 as possible (TI datasheet requirement)
 D1,TVS diode (1500W unidirectional),1.5KE6.8A,DO-201AE THT,Vishay,1.5KE6.8A,1,,"VWM 5.80V / VBR 6.45-7.14V @10mA / VC 10.5V @143A. Cathode (banded end) toward +5V - the KiCad symbol names both pins A1/A2 and shows no polarity, but the footprint silkscreen has the band. Clamps above U1 absolute max 7V, so it protects the NES, not the eFuse"
-F1,PTC resettable polyfuse,IH=2.0A / IT=3.8A / VMAX=16V,Radial disc THT,Littelfuse,RHEF200,1,,Non-polarized; backup protection upstream of U1 eFuse. KiCad footprint field mislabeled as polarized cap footprint in v1 (fix in v2)
-Q1,PNP transistor,2SA1015,TO-92 THT,MCC,2SA1015,1,,"Flat side facing viewer, leads down = E-C-B left to right. Base=video in, Emitter=R1/C2 net, Collector=GND"
-R1,Resistor,300Ω (design value),THT,MOGAOPI,,1,,"Q1 emitter load: one end +5V, other end to Q1 emitter/C2 node. Built with 330Ω substitute (~10% off, acceptable)"
+F1,PTC resettable polyfuse,2A (IH=2.0A / IT=3.8A / VMAX=16V),Radial disc THT,Littelfuse,RHEF200,1,,Non-polarized; backup protection upstream of U1 eFuse. KiCad footprint field mislabeled as polarized cap footprint in v1 (fix in v2)
+Q1,PNP transistor,2SA1015,TO-92 THT,MCC,KSA1015 (2SA1015 equivalent),1,,"Flat side facing viewer, leads down = E-C-B left to right. Base=video in (through R2), Emitter=R1/C2 node, Collector=GND. 2SA1015 is obsolete and the market carries relabelled parts — source the KSA1015 (onsemi), same E-C-B pinout, still in production. Do not substitute 2N3906 or BC557 without re-checking the pinout; both differ."
+R1,Resistor,220Ω,THT,MOGAOPI,,1,,"Q1 emitter load: one end +5V, other end to Q1 emitter/C2 node. Not both ends to +5V. Raised from 300Ω for v2: at the assumed ~1.3V base, 300-330Ω supplies only ~6.2mA at peak white against the ~6.7mA the 150Ω load needs. 220Ω gives ~9.3mA and real headroom. Retune if the measured DC at J4.1 differs from ~1.3V."
+R2,Resistor,330Ω,Axial THT DIN0207 P7.62mm,,,1,,"Series resistor between J4.1 (video in from NES) and Q1's base. Mirrors the 330Ω Nintendo places in the same position. Negligible signal loss against Q1's ~21kΩ base input impedance; limits fault current into the base-emitter junction, whose reverse rating is only 5V. New in v2."
 R3,Resistor,5.1kΩ,THT,MOGAOPI,,1,,CC1 pulldown; measured 5.07kΩ
 R4,Resistor,5.1kΩ,THT,MOGAOPI,,1,,CC2 pulldown; measured 5.13kΩ
 R5,Resistor,75Ω,THT,MOGAOPI,,1,,Video series termination; populated on the fabbed v1 board
-R6,Resistor,22k,0805 SMD,,,1,,"Sets U1 current limit. I_OS = 25.9/R_ILIM(kohm) -> ~1.18A typ. Higher R = LOWER limit. Valid range 15k-232k"
-U1,Current-limited power switch (eFuse),TPS2553DBVR,SOT-23-6 SMD,Texas Instruments,TPS2553DBVR,1,,"Adjustable OCP between F1 and the 5V rail. EN (pin 3) active-high tied to IN. Auto-retry version (the -1 suffix is latch-off). FAULT (pin 4) left unconnected"
+R6,Resistor,22k,0805 SMD,,,1,,Sets U1 current limit. I_OS = 25.9/R_ILIM(kohm) -> ~1.18A typ. Higher R = LOWER limit. Valid range 15k-232k
+U1,Current-limited power switch (eFuse),TPS2553DBVR,SOT-23-6 SMD,Texas Instruments,TPS2553DBVR,1,,Adjustable OCP between F1 and the 5V rail. EN (pin 3) active-high tied to IN. Auto-retry version (the -1 suffix is latch-off). FAULT (pin 4) left unconnected
 USB C1,USB-C receptacle,USB4970-00-A,SMD,GCT,USB4970-00-A,1,,"6-pin power-only (VBUS x2, GND x2, CC1, CC2); no data lines"
 TP1-TP4,Test point (through-hole pad),,2.0mm pad / 1.0mm drill THT,,,4,,"Not a purchased part — bare plated holes for bring-up (video, GND, +5V, audio). Optionally fit 0.64mm square header pins for scope grabbers."
 R7,Resistor,75 Ohm,Axial THT DIN0207 P7.62mm,,,1,,Series source termination for the mini-DIN RGB connector video pin (mirrors R5 for the RCA jack)

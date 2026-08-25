@@ -263,6 +263,36 @@ Q1's ~21 kΩ base input impedance it costs nothing in signal terms; what it buys
 is fault-current limiting into the base-emitter junction, whose reverse rating
 is only 5 V.
 
+## Design checks
+
+Two safety nets sit alongside ERC and DRC, both aimed at faults this board has
+actually shipped with.
+
+### `tools/check_nets.py`
+
+```
+python3 tools/check_nets.py
+```
+
+Exports the schematic netlist, reads the PCB's pad nets, confirms the two agree,
+and asserts a set of invariants — chief among them that **Q1's emitter is not on
+any power net**. That was the v1 fault: the emitter follower's output was tied
+to +5V along with J4.3, D1.1 and F1.1, so Q1 saturated into a grounded collector
+with nothing limiting the current. It destroyed a transistor on every power-up.
+
+**ERC and DRC both passed cleanly on that board.** Neither can see that a net is
+*wrong*, only that it is internally consistent — which is exactly why this check
+exists. Run it before generating a fab package. Gerbers carry no net information,
+so once you have them the mistake is invisible.
+
+### `nes_power_video.kicad_dru`
+
+Custom DRC rules covering the geometric half: extra clearance between Q1's
+emitter and base nodes and the supply rails, and between the two USB-C
+configuration channels. These catch the layout-adjacency version of the same
+mistakes. They cannot catch a wrong net assignment — DRC has no view of design
+intent — which is what the script above is for.
+
 ## Assembly
 
 <!-- Add step-by-step or reference photos here once you've got a documented build process -->

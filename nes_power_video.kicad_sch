@@ -3002,13 +3002,13 @@
 	)
 	(wire
 		(pts
-			(xy 30.48 189.23) (xy 30.48 180.34)
+			(xy 30.48 189.23) (xy 30.48 187.96)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "0dc46e2f-80a0-4822-a78f-ff757e823190")
+		(uuid "89350ae5-de73-44e3-9954-a529c0777365")
 	)
 	(wire
 		(pts
@@ -3715,7 +3715,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "100uf"
+		(property "Value" "470uf"
 			(at 73.66 141.3509 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4067,7 +4067,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "Polyfuse_Small"
+		(property "Value" "2A"
 			(at 130.81 144.7799 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4122,6 +4122,88 @@
 			(project "nes_power_video"
 				(path "/467ff530-bd7b-4486-a282-e5127feecbd3"
 					(reference "F1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 30.48 184.15 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "7d10d0c5-29df-4def-b88b-c969a11f152e")
+		(property "Reference" "R2"
+			(at 33.02 182.8799 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "330"
+			(at 33.02 185.4199 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal"
+			(at 28.702 184.15 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 30.48 184.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 30.48 184.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "30a67f4e-e437-4039-8519-13a4b84567c1")
+		)
+		(pin "2"
+			(uuid "4823a493-bae4-4c4c-8d70-6a64aab2a4a0")
+		)
+		(instances
+			(project "nes_power_video"
+				(path "/467ff530-bd7b-4486-a282-e5127feecbd3"
+					(reference "R2")
 					(unit 1)
 				)
 			)
@@ -4641,7 +4723,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "300"
+		(property "Value" "220"
 			(at 36.83 146.0499 0)
 			(show_name no)
 			(do_not_autoplace no)

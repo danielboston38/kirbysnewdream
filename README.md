@@ -138,15 +138,16 @@ RCA jack, R7 for the mini-DIN. Tying both to one resistor would put two 75 Ω lo
 in parallel and halve the amplitude whenever both cables are plugged in.
 
 **One output at a time.** Composite and RGB are an either/or — the design does not
-target using both at once, and R1 stays at 330 Ω. Whichever cable is plugged sees
-a correct 75 Ω source, and the unused branch is an unloaded stub.
+target using both at once. Whichever cable is plugged sees a correct 75 Ω source,
+and the unused branch is an unloaded stub.
 
 If both are ever plugged in simultaneously, R7 means each still gets a properly
 terminated 75 Ω source rather than the halved amplitude you'd get from sharing one
-resistor. Q1's drive is the limit in that case: R1 at 330 Ω gives roughly 8.6 mA
-standing current against the ~8.7 mA peak two 75+75 Ω chains want, so the follower
-would sit right at the edge of clipping. 220 Ω would clear it. Not measured on
-hardware, and not a supported mode.
+resistor. Q1's drive is the limit in that case, and the v2 value settles it: at
+220 Ω, R1 supplies roughly 12.9 mA standing against the ~8.7 mA peak that two
+75+75 Ω chains want. v1's 330 Ω gave only ~8.6 mA and would have sat right at the
+edge of clipping. Still not measured on hardware and still not a supported mode —
+both figures rest on the same unmeasured ~1.3 V base assumption.
 
 ## Hardware
 
@@ -234,7 +235,7 @@ state risks another transistor, which is the likely fate of the first one.
 - F1 (polyfuse) footprint field in KiCad is mislabeled as a polarized capacitor footprint despite correct value — cosmetic/documentation issue only, does not affect function. Fix planned for v2.
 - Video/audio RCA jack mounting holes are slightly asymmetric — cosmetic only, doesn't affect NES shell fit.
 - v1 silkscreen doesn't include component value labels or Q1 pin markers (E/C/B). **Values are on the silkscreen from v2.** On v1 this caused three separate wrong-resistor errors in R1 (a 5.1kΩ and an 820Ω both fitted before the right value went in) because R1/R3/R4/R5/R7 share one footprint across four values. Q1 pin markers are still outstanding.
-- **D1 does not protect U1.** The fitted TVS is a 1.5KE6.8A: stand-off 5.80 V, breakdown 6.45–7.14 V at 10 mA, clamping 10.5 V at 143 A. The TPS2553's absolute maximum on IN and OUT is 7 V, so the TVS has barely begun conducting by the time the eFuse is already out of spec, and under a real surge it lets the rail reach 10.5 V. D1 protects the console downstream; it will not save U1. Repositioning D1 doesn't help — both U1 pins share the same 7 V rating — and no avalanche TVS clamps below 7 V while standing off USB-C's 5.5 V worst case. Proper protection needs a switch with integrated overvoltage cutoff. Deferred to v2.
+- **D1 does not protect U1.** The fitted TVS is a 1.5KE6.8A: stand-off 5.80 V, breakdown 6.45–7.14 V at 10 mA, clamping 10.5 V at 143 A. The TPS2553's absolute maximum on IN and OUT is 7 V, so the TVS has barely begun conducting by the time the eFuse is already out of spec, and under a real surge it lets the rail reach 10.5 V. D1 protects the console downstream; it will not save U1. Repositioning D1 doesn't help — both U1 pins share the same 7 V rating — and no avalanche TVS clamps below 7 V while standing off USB-C's 5.5 V worst case. Proper protection needs a switch with integrated overvoltage cutoff. Deferred to v3 — v2 ships with this gap.
 - D1's symbol (`Diode:1.5KExxA`) names both pins A1/A2 and draws no cathode — KiCad uses identical pin naming for the unidirectional and bidirectional variants of this part. Polarity comes only from the footprint silkscreen band, which is at the pad-1 (+5 V) end and is correct. Watch this when hand-assembling.
 
 ## Video input biasing
@@ -300,7 +301,7 @@ intent — which is what the script above is for.
 Refer to BOM.csv for exact part values and footprints. Key notes:
 - D1 (zener/TVS): cathode (banded end) toward VBUS/+5V side
 - Q1 (2SA1015, PNP): flat side facing viewer, leads down = Emitter-Collector-Base, left to right. The 2SA1015 is obsolete and the market carries relabelled parts — source the **KSA1015** (onsemi), same E-C-B pinout, still in production. Do not drop in a 2N3906 or BC557 without re-checking the pinout; both differ.
-- R1 (220Ω): emitter load for Q1 — one end to +5V, the other to the Q1 emitter / C2 node. Not both ends to +5V. Raised from 300Ω in v2: at the assumed ~1.3 V base, 300–330Ω supplies only ~6.2 mA at peak white against the ~6.7 mA the 150Ω load wants. Retune if the measured DC at J4 pin 1 differs from ~1.3 V.
+- R1 (220Ω): emitter load for Q1 — one end to +5V, the other to the Q1 emitter / C2 node. Not both ends to +5V. Lowered from 300Ω in v2 to raise the drive current: at the assumed ~1.3 V base, 300–330Ω supplies only ~6.2 mA at peak white against the ~6.7 mA the 150Ω load wants. Retune if the measured DC at J4 pin 1 differs from ~1.3 V.
 - R2 (330Ω): series resistor in the video input line, between J4 pin 1 and Q1's base. See [Video input biasing](#video-input-biasing).
 - **Trim all through-hole leads flush.** The board sits in the RF module slot with shielding immediately below it. Long clipped leads on the underside will short against the can — on the prototype this presented as an intermittent supply trip that only appeared when the board was moved.
 - C2 (470µF): not 100µF. Into the 150Ω load, 100µF gives τ=15 ms against the 16.7 ms field period and tilts the picture top to bottom. 470µF gives τ=70 ms.

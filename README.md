@@ -138,15 +138,17 @@ RCA jack, R7 for the mini-DIN. Tying both to one resistor would put two 75 Ω lo
 in parallel and halve the amplitude whenever both cables are plugged in.
 
 **One output at a time.** Composite and RGB are an either/or — the design does not
-target using both at once, and R1 stays at 330 Ω. Whichever cable is plugged sees
-a correct 75 Ω source, and the unused branch is an unloaded stub.
+target using both at once. Whichever cable is plugged sees a correct 75 Ω source,
+and the unused branch is an unloaded stub.
 
 If both are ever plugged in simultaneously, R7 means each still gets a properly
 terminated 75 Ω source rather than the halved amplitude you'd get from sharing one
-resistor. Q1's drive is the limit in that case: R1 at 330 Ω gives roughly 8.6 mA
-standing current against the ~8.7 mA peak two 75+75 Ω chains want, so the follower
-would sit right at the edge of clipping. 220 Ω would clear it. Not measured on
-hardware, and not a supported mode.
+resistor. Q1's drive is the limit in that case, and it is why **R1 is 220 Ω from
+v2** rather than the original 330 Ω. Simulated in ngspice with 2 Vpp at the tap
+and both outputs terminated: at 330 Ω the follower clips the positive (white)
+peaks by 33 %, at 220 Ω by 11 %. With a single output loaded — the supported
+mode — 220 Ω is clean and symmetric (+0.439 / −0.447 V at the jack). Simulated,
+not measured on hardware, and still not a supported mode.
 
 ## Hardware
 

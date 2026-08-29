@@ -21,7 +21,7 @@
     (property "Mouser Part Number" "502-PJRAN1X1U03X" (at 29.21 -494.92 0)
       (effects (font (size 1.27 1.27)) (justify left top) hide)
     )
-    (property "Mouser Price/Stock" "https://www.mouser.co.uk/ProductDetail/Switchcraft/PJRAN1X1U03X?qs=mcPJWgAPNrc45bmxqO8nXw%3D%3D" (at 29.21 -594.92 0)
+    (property "Mouser Price/Stock" "https://www.mouser.com/en/ProductDetail/Switchcraft/PJRAN1X1U03X?qs=mcPJWgAPNrc45bmxqO8nXw%3D%3D" (at 29.21 -594.92 0)
       (effects (font (size 1.27 1.27)) (justify left top) hide)
     )
     (property "Manufacturer" "Switchcraft" (at 29.21 -694.92 0)
@@ -30,7 +30,7 @@
     (property "MPN" "PJRAN1X1U03X" (at 29.21 -794.92 0)
       (effects (font (size 1.27 1.27)) (justify left top) hide)
     )
-    (property "Supplier Link" "https://www.mouser.co.uk/ProductDetail/Switchcraft/PJRAN1X1U03X?qs=mcPJWgAPNrc45bmxqO8nXw%3D%3D" (at 29.21 -894.92 0)
+    (property "Supplier Link" "https://www.mouser.com/en/ProductDetail/Switchcraft/PJRAN1X1U03X?qs=mcPJWgAPNrc45bmxqO8nXw%3D%3D" (at 29.21 -894.92 0)
       (effects (font (size 1.27 1.27)) (justify left top) hide)
     )
     (rectangle

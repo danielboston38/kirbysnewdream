@@ -1579,7 +1579,7 @@
 					(justify left top)
 				)
 			)
-			(property "Mouser Price/Stock" "https://www.mouser.co.uk/ProductDetail/Switchcraft/PJRAN1X1U03X?qs=mcPJWgAPNrc45bmxqO8nXw%3D%3D"
+			(property "Mouser Price/Stock" "https://www.mouser.com/en/ProductDetail/Switchcraft/PJRAN1X1U03X?qs=mcPJWgAPNrc45bmxqO8nXw%3D%3D"
 				(at 29.21 -594.92 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1615,7 +1615,7 @@
 					(justify left top)
 				)
 			)
-			(property "Supplier Link" "https://www.mouser.co.uk/ProductDetail/Switchcraft/PJRAN1X1U03X?qs=mcPJWgAPNrc45bmxqO8nXw%3D%3D"
+			(property "Supplier Link" "https://www.mouser.com/en/ProductDetail/Switchcraft/PJRAN1X1U03X?qs=mcPJWgAPNrc45bmxqO8nXw%3D%3D"
 				(at 29.21 -894.92 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -4151,7 +4151,7 @@
 				)
 			)
 		)
-		(property "MPN" "KSA1015"
+		(property "MPN" "KSA1015GRTA"
 			(at 35.56 189.23 0)
 			(hide yes)
 			(show_name no)
@@ -4162,7 +4162,7 @@
 				)
 			)
 		)
-		(property "Spec" "PNP TO-92, E-C-B pinout; any hFE grade. 2SA1015 is the obsolete original"
+		(property "Spec" "PNP TO-92, E-C-B pinout, any hFE grade. END OF LIFE both ways: onsemi KSA1015 is obsolete, stocked only as KSA1015GRTA-ON through Rochester; MCC 2SA1015-GR-AP is on Mouser but flagged End of Life. Needs a live replacement for v3."
 			(at 35.56 189.23 0)
 			(hide yes)
 			(show_name no)
@@ -4173,7 +4173,7 @@
 				)
 			)
 		)
-		(property "Supplier Link" "https://www.digikey.com/en/products/result?keywords=KSA1015"
+		(property "Supplier Link" "https://www.digikey.com/en/products/detail/rochester-electronics-llc/KSA1015GRTA-ON/12643065"
 			(at 35.56 189.23 0)
 			(hide yes)
 			(show_name no)
@@ -4303,7 +4303,7 @@
 				)
 			)
 		)
-		(property "Supplier Link" "https://www.digikey.com/en/products/result?keywords=RHEF200"
+		(property "Supplier Link" "https://www.digikey.com/en/products/detail/littelfuse-inc/RHEF200/5130265"
 			(at 128.27 143.51 0)
 			(hide yes)
 			(show_name no)
@@ -4590,7 +4590,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.vishay.com/docs/88301/15ke.pdf"
+		(property "Datasheet" "https://www.littelfuse.com/assetdocs/littelfuse_tvs_diode_1_5ke_datasheet.pdf?assetguid=9d02c7d2-86a5-4bff-9251-966d6af02bf7"
 			(at 121.92 135.89 0)
 			(hide yes)
 			(show_name no)
@@ -4612,7 +4612,7 @@
 				)
 			)
 		)
-		(property "Manufacturer" "Vishay"
+		(property "Manufacturer" "Littelfuse"
 			(at 121.92 135.89 0)
 			(hide yes)
 			(show_name no)
@@ -4634,7 +4634,18 @@
 				)
 			)
 		)
-		(property "Supplier Link" "https://www.digikey.com/en/products/result?keywords=1.5KE6.8A"
+		(property "Supplier Link" "https://www.digikey.com/en/products/detail/littelfuse-inc/1-5KE6-8A/285842"
+			(at 121.92 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Spec" "1500 W unidirectional TVS: VWM 5.8 V, VBR 6.45 V min, VC 10.5 V @ 144.8 A. Littelfuse packages it as DO-201AA/DO-27; the DO-201AE footprint takes it (15.24 mm pitch, 1.3 mm drills)."
 			(at 121.92 135.89 0)
 			(hide yes)
 			(show_name no)
@@ -4864,7 +4875,7 @@
 				(justify left top)
 			)
 		)
-		(property "Mouser Price/Stock" "https://www.mouser.co.uk/ProductDetail/Switchcraft/PJRAN1X1U03X?qs=mcPJWgAPNrc45bmxqO8nXw%3D%3D"
+		(property "Mouser Price/Stock" "https://www.mouser.com/en/ProductDetail/Switchcraft/PJRAN1X1U03X?qs=mcPJWgAPNrc45bmxqO8nXw%3D%3D"
 			(at 91.44 765.1 0)
 			(hide yes)
 			(show_name no)
@@ -4900,7 +4911,7 @@
 				(justify left top)
 			)
 		)
-		(property "Supplier Link" "https://www.mouser.co.uk/ProductDetail/Switchcraft/PJRAN1X1U03X?qs=mcPJWgAPNrc45bmxqO8nXw%3D%3D"
+		(property "Supplier Link" "https://www.mouser.com/en/ProductDetail/Switchcraft/PJRAN1X1U03X?qs=mcPJWgAPNrc45bmxqO8nXw%3D%3D"
 			(at 91.44 365.1 0)
 			(hide yes)
 			(show_name no)
@@ -5026,7 +5037,7 @@
 				)
 			)
 		)
-		(property "Supplier Link" "https://www.digikey.com/en/products/result?keywords=USB4970-00-A"
+		(property "Supplier Link" "https://www.digikey.com/en/products/detail/gct/USB4970-00-A/28722813"
 			(at 113.03 153.67 0)
 			(hide yes)
 			(show_name no)
@@ -5377,7 +5388,7 @@
 				(justify left top)
 			)
 		)
-		(property "Mouser Price/Stock" "https://www.mouser.co.uk/ProductDetail/Switchcraft/PJRAN1X1U03X?qs=mcPJWgAPNrc45bmxqO8nXw%3D%3D"
+		(property "Mouser Price/Stock" "https://www.mouser.com/en/ProductDetail/Switchcraft/PJRAN1X1U03X?qs=mcPJWgAPNrc45bmxqO8nXw%3D%3D"
 			(at 52.07 763.83 0)
 			(hide yes)
 			(show_name no)
@@ -5413,7 +5424,7 @@
 				(justify left top)
 			)
 		)
-		(property "Supplier Link" "https://www.mouser.co.uk/ProductDetail/Switchcraft/PJRAN1X1U03X?qs=mcPJWgAPNrc45bmxqO8nXw%3D%3D"
+		(property "Supplier Link" "https://www.mouser.com/en/ProductDetail/Switchcraft/PJRAN1X1U03X?qs=mcPJWgAPNrc45bmxqO8nXw%3D%3D"
 			(at 52.07 363.83 0)
 			(hide yes)
 			(show_name no)

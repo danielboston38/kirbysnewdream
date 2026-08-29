@@ -96,6 +96,8 @@ Flags:
 | `--out <dir>` | package destination, default `fab/` |
 | `--json` | machine-readable verdict on stdout in addition to the report |
 | `--strict` | treat cosmetic findings as blocking too — for a final pre-order run |
+| `--schematic <path>` | schematic to check parity against, when it is not the board's conventional sibling |
+| `--no-parity` | skip schematic parity; recorded as a cosmetic `parity_not_run` finding, never silently |
 
 Exit codes: `0` clean · `2` blocked by findings · `3` environment problem.
 
@@ -157,12 +159,32 @@ whether the package still corresponds to it.
   unparseable DRC output, an unwritable package — and usage errors, which take
   `3` rather than argparse's default `2` so CI can tell a mistyped flag from a
   board that failed verification.
-- **Schematic parity fails closed.** `kicad-cli pcb drc --schematic-parity`
-  exits `0` and emits `"schematic_parity": []` when it cannot load the
-  schematic, printing only to stderr. The gate therefore refuses to run when
-  the board's `.kicad_sch` is absent, and treats those stderr markers as a
-  failure regardless of exit code. A clean parity result that means "parity
-  never ran" is the exact fault class this tool exists to catch.
+- **Schematic parity fails closed, as a finding.** `kicad-cli pcb drc
+  --schematic-parity` exits `0` and emits `"schematic_parity": []` when it
+  cannot load the schematic, printing only to stderr. A clean parity result
+  that means "parity never ran" is the exact fault class this tool exists to
+  catch.
+
+  Refusing to start would be the wrong remedy: measured across a 493-board
+  corpus, **17.8% of real KiCad projects have no `.kicad_sch` under the board's
+  own basename** (78 with none in that directory, 10 under a different name).
+  A gate that will not start on one project in five is not a gate either.
+
+  So the gate locates the schematic — the conventional sibling, else a sole
+  `*.kicad_sch` beside the board, else nothing rather than a guess among
+  several — and when it cannot, synthesises a **blocking `parity_not_run`
+  finding** naming what it tried. `--schematic PATH` overrides the search;
+  `--no-parity` records the same finding as **cosmetic**, so a PCB-only design
+  can be gated deliberately but never silently. The stderr markers produce the
+  same finding: the violations in that report are still valid, so it is a
+  finding about the board, not an environment failure.
+
+  The manifest records whether parity ran, against which schematic, or why not.
+
+  Note that `kicad-cli pcb drc` derives the schematic from the board's basename
+  and offers no override, so `--schematic` cannot make a differently-named
+  schematic work — it must be renamed. The gate reports that rather than
+  pretending otherwise.
 - `kicad-cli` missing or too old → exit `3` with platform-specific install
   hints. This plugin *requires* KiCad, the opposite of kicad-happy's premise, so
   the failure must be loud rather than a silent degrade.

@@ -299,8 +299,24 @@ intent — which is what the script above is for.
 
 <!-- Add step-by-step or reference photos here once you've got a documented build process -->
 
-Refer to BOM.csv for exact part values and footprints. Key notes:
-- D1 (zener/TVS): cathode (banded end) toward VBUS/+5V side
+Refer to BOM.csv for exact part values and footprints. Every component carries
+its sourcing data in two places, kept in step: the `Manufacturer`, `MPN`,
+`LCSC`, `Supplier Link` and `Datasheet` fields on the schematic symbol, and
+the matching columns in `BOM.csv`. Jellybean passives have no manufacturer
+part number by design — they carry a `Spec` field instead (tolerance, rating,
+package) and any part meeting it will do. To pull the fields straight out of
+the schematic:
+
+```
+kicad-cli sch export bom --group-by '' \
+    --fields 'Reference,Value,Manufacturer,MPN,LCSC,Datasheet,Supplier Link,Spec' \
+    -o bom.csv nes_power_video.kicad_sch
+```
+
+Key notes:
+- D1 (zener/TVS): cathode (banded end) toward VBUS/+5V side. From v2 the
+  silkscreen prints the value actually fitted, `1.5KE6.8A`; before that it
+  printed the generic KiCad symbol name `1.5KExxA`, which is not orderable.
 - Q1 (2SA1015, PNP): flat side facing viewer, leads down = Emitter-Collector-Base, left to right. The 2SA1015 is obsolete and the market carries relabelled parts — source the **KSA1015** (onsemi), same E-C-B pinout, still in production. Do not drop in a 2N3906 or BC557 without re-checking the pinout; both differ.
 - R1 (220Ω): emitter load for Q1 — one end to +5V, the other to the Q1 emitter / C2 node. Not both ends to +5V. Raised from 300Ω in v2: at the assumed ~1.3 V base, 300–330Ω supplies only ~6.2 mA at peak white against the ~6.7 mA the 150Ω load wants. Retune if the measured DC at J4 pin 1 differs from ~1.3 V.
 - R2 (330Ω): series resistor in the video input line, between J4 pin 1 and Q1's base. See [Video input biasing](#video-input-biasing).

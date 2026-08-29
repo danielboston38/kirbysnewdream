@@ -1532,7 +1532,7 @@
 					(justify left top)
 				)
 			)
-			(property "Datasheet" "https://www.mouser.in/datasheet/3/144/1/pjran1x1u__x_series_cd.pdf"
+			(property "Datasheet" "https://www.switchcraft.com/assets/1/24/PJRAN1X1U__X_SERIES_CD.PDF"
 				(at 29.21 -194.92 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1591,7 +1591,7 @@
 					(justify left top)
 				)
 			)
-			(property "Manufacturer_Name" "Switchcraft"
+			(property "Manufacturer" "Switchcraft"
 				(at 29.21 -694.92 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1603,8 +1603,20 @@
 					(justify left top)
 				)
 			)
-			(property "Manufacturer_Part_Number" "PJRAN1X1U03X"
+			(property "MPN" "PJRAN1X1U03X"
 				(at 29.21 -794.92 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left top)
+				)
+			)
+			(property "Supplier Link" "https://www.mouser.co.uk/ProductDetail/Switchcraft/PJRAN1X1U03X?qs=mcPJWgAPNrc45bmxqO8nXw%3D%3D"
+				(at 29.21 -894.92 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(hide yes)
@@ -2356,6 +2368,42 @@
 				)
 			)
 			(property "Description" "Adjustable current-limited power distribution switch, 0.075-1.7 A, active-high enable, SOT-23-6"
+				(at 0 0 0)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Manufacturer" "Texas Instruments"
+				(at 0 0 0)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "MPN" "TPS2553DBVR"
+				(at 0 0 0)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "LCSC" "C55266"
+				(at 0 0 0)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Supplier Link" "https://www.lcsc.com/product-detail/C55266.html"
 				(at 0 0 0)
 				(hide yes)
 				(effects
@@ -3677,6 +3725,28 @@
 				)
 			)
 		)
+		(property "Manufacturer" "Generic"
+			(at 128.27 165.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Spec" "5.1 kOhm +/-5%, >=0.1 W, axial THT, 7.62 mm pitch (USB-C CC pulldown Rd)"
+			(at 128.27 165.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "c5856010-6328-44ed-8ca5-1ac6648338ef")
 		)
@@ -3749,6 +3819,28 @@
 			)
 		)
 		(property "Description" "Polarized capacitor"
+			(at 69.85 140.97 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "Generic"
+			(at 69.85 140.97 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Spec" "470 uF, >=16 V, aluminium electrolytic, radial, <=10 mm dia, 5.0 mm pitch"
 			(at 69.85 140.97 0)
 			(hide yes)
 			(show_name no)
@@ -3919,6 +4011,28 @@
 				)
 			)
 		)
+		(property "Manufacturer" "Generic"
+			(at 133.35 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Spec" "100 uF, >=16 V, aluminium electrolytic, radial, <=10 mm dia, 5.0 mm pitch"
+			(at 133.35 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "62200c53-3bd5-4c5d-bedc-651c4a744e5d")
 		)
@@ -3981,7 +4095,7 @@
 				(justify left)
 			)
 		)
-		(property "Datasheet" "http://www.datasheetcatalog.org/datasheet/toshiba/905.pdf"
+		(property "Datasheet" "https://www.onsemi.com/download/data-sheet/pdf/ksa1015-d.pdf"
 			(at 35.56 189.23 0)
 			(hide yes)
 			(show_name no)
@@ -4016,6 +4130,50 @@
 			)
 		)
 		(property "Sim.Pins" "1=E 2=C 3=B"
+			(at 35.56 189.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "onsemi"
+			(at 35.56 189.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "KSA1015"
+			(at 35.56 189.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Spec" "PNP TO-92, E-C-B pinout; any hFE grade. 2SA1015 is the obsolete original"
+			(at 35.56 189.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Supplier Link" "https://www.digikey.com/en/products/result?keywords=KSA1015"
 			(at 35.56 189.23 0)
 			(hide yes)
 			(show_name no)
@@ -4090,7 +4248,7 @@
 				(justify left)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "https://www.littelfuse.com/assetdocs/resettable-ptc-rhef-datasheet?assetguid=5c5a29fe-1611-4d65-b4ce-dc979c44d206"
 			(at 128.27 143.51 0)
 			(hide yes)
 			(show_name no)
@@ -4102,6 +4260,50 @@
 			)
 		)
 		(property "Description" "Resettable fuse, polymeric positive temperature coefficient, small symbol"
+			(at 128.27 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "Littelfuse"
+			(at 128.27 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "RHEF200"
+			(at 128.27 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Spec" "PPTC radial, IH 2.0 A / IT 3.8 A / 16 V max"
+			(at 128.27 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Supplier Link" "https://www.digikey.com/en/products/result?keywords=RHEF200"
 			(at 128.27 143.51 0)
 			(hide yes)
 			(show_name no)
@@ -4194,6 +4396,28 @@
 				)
 			)
 		)
+		(property "Manufacturer" "Generic"
+			(at 30.48 184.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Spec" "330 Ohm +/-5%, >=0.25 W, axial THT, 7.62 mm pitch"
+			(at 30.48 184.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "30a67f4e-e437-4039-8519-13a4b84567c1")
 		)
@@ -4276,6 +4500,28 @@
 				)
 			)
 		)
+		(property "Manufacturer" "Generic"
+			(at 134.62 161.29 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Spec" "5.1 kOhm +/-5%, >=0.1 W, axial THT, 7.62 mm pitch (USB-C CC pulldown Rd)"
+			(at 134.62 161.29 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "1646fcfc-6053-43e3-9313-6948071958d2")
 		)
@@ -4312,7 +4558,7 @@
 				)
 			)
 		)
-		(property "Value" "1.5KExxA"
+		(property "Value" "1.5KE6.8A"
 			(at 121.158 139.446 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4346,6 +4592,39 @@
 		)
 		(property "Description" "1500W unidirectional TVS diode, DO-201AE"
 			(at 120.65 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "Vishay"
+			(at 121.92 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "1.5KE6.8A"
+			(at 121.92 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Supplier Link" "https://www.digikey.com/en/products/result?keywords=1.5KE6.8A"
+			(at 121.92 135.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4437,6 +4716,28 @@
 				)
 			)
 		)
+		(property "Manufacturer" "Generic"
+			(at 144.78 149.86 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Spec" "1x05 pin header, 2.54 mm pitch, vertical THT (e.g. LCSC C492404)"
+			(at 144.78 149.86 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "3"
 			(uuid "91dfd133-47c9-4953-b5d7-edf9421bdb4d")
 		)
@@ -4505,7 +4806,7 @@
 				(justify left top)
 			)
 		)
-		(property "Datasheet" "https://www.mouser.in/datasheet/3/144/1/pjran1x1u__x_series_cd.pdf"
+		(property "Datasheet" "https://www.switchcraft.com/assets/1/24/PJRAN1X1U__X_SERIES_CD.PDF"
 			(at 91.44 365.1 0)
 			(hide yes)
 			(show_name no)
@@ -4564,7 +4865,7 @@
 				(justify left top)
 			)
 		)
-		(property "Manufacturer_Name" "Switchcraft"
+		(property "Manufacturer" "Switchcraft"
 			(at 91.44 865.1 0)
 			(hide yes)
 			(show_name no)
@@ -4576,7 +4877,7 @@
 				(justify left top)
 			)
 		)
-		(property "Manufacturer_Part_Number" "PJRAN1X1U03X"
+		(property "MPN" "PJRAN1X1U03X"
 			(at 91.44 965.1 0)
 			(hide yes)
 			(show_name no)
@@ -4586,6 +4887,17 @@
 					(size 1.27 1.27)
 				)
 				(justify left top)
+			)
+		)
+		(property "Supplier Link" "https://www.mouser.co.uk/ProductDetail/Switchcraft/PJRAN1X1U03X?qs=mcPJWgAPNrc45bmxqO8nXw%3D%3D"
+			(at 91.44 365.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 			)
 		)
 		(pin "1"
@@ -4648,7 +4960,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.usb.org/sites/default/files/documents/usb_type-c.zip"
+		(property "Datasheet" "https://gct.co/files/drawings/usb4970.pdf"
 			(at 113.03 153.67 0)
 			(hide yes)
 			(show_name no)
@@ -4660,6 +4972,50 @@
 			)
 		)
 		(property "Description" "USB Power-Only 6P Type-C Receptacle connector"
+			(at 113.03 153.67 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "GCT"
+			(at 113.03 153.67 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "USB4970-00-A"
+			(at 113.03 153.67 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Spec" "USB Type-C receptacle, 6P power-only (VBUS x2, GND x2, CC1, CC2)"
+			(at 113.03 153.67 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Supplier Link" "https://www.digikey.com/en/products/result?keywords=USB4970-00-A"
 			(at 113.03 153.67 0)
 			(hide yes)
 			(show_name no)
@@ -4767,6 +5123,28 @@
 				)
 			)
 		)
+		(property "Manufacturer" "Generic"
+			(at 34.29 144.78 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Spec" "220 Ohm +/-5%, >=0.25 W, axial THT, 7.62 mm pitch"
+			(at 34.29 144.78 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "bdec0619-dd08-406f-9e0a-cf39c0760f86")
 		)
@@ -4849,6 +5227,28 @@
 				)
 			)
 		)
+		(property "Manufacturer" "Generic"
+			(at 62.23 161.29 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Spec" "75 Ohm +/-1%, >=0.25 W, axial THT, 7.62 mm pitch"
+			(at 62.23 161.29 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "a88ab14e-63d3-4999-9b02-95f3fc91f483")
 		)
@@ -4908,7 +5308,7 @@
 				(justify left top)
 			)
 		)
-		(property "Datasheet" "https://www.mouser.in/datasheet/3/144/1/pjran1x1u__x_series_cd.pdf"
+		(property "Datasheet" "https://www.switchcraft.com/assets/1/24/PJRAN1X1U__X_SERIES_CD.PDF"
 			(at 52.07 363.83 0)
 			(hide yes)
 			(show_name no)
@@ -4967,7 +5367,7 @@
 				(justify left top)
 			)
 		)
-		(property "Manufacturer_Name" "Switchcraft"
+		(property "Manufacturer" "Switchcraft"
 			(at 52.07 863.83 0)
 			(hide yes)
 			(show_name no)
@@ -4979,7 +5379,7 @@
 				(justify left top)
 			)
 		)
-		(property "Manufacturer_Part_Number" "PJRAN1X1U03X"
+		(property "MPN" "PJRAN1X1U03X"
 			(at 52.07 963.83 0)
 			(hide yes)
 			(show_name no)
@@ -4989,6 +5389,17 @@
 					(size 1.27 1.27)
 				)
 				(justify left top)
+			)
+		)
+		(property "Supplier Link" "https://www.mouser.co.uk/ProductDetail/Switchcraft/PJRAN1X1U03X?qs=mcPJWgAPNrc45bmxqO8nXw%3D%3D"
+			(at 52.07 363.83 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 			)
 		)
 		(pin "2"
@@ -5286,7 +5697,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/tps2553.pdf"
 			(at 189.23 139.7 0)
 			(hide yes)
 			(show_name no)
@@ -5298,6 +5709,50 @@
 			)
 		)
 		(property "Description" "Adjustable current-limited power distribution switch, SOT-23-6"
+			(at 189.23 139.7 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "Texas Instruments"
+			(at 189.23 139.7 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "TPS2553DBVR"
+			(at 189.23 139.7 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C55266"
+			(at 189.23 139.7 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Supplier Link" "https://www.lcsc.com/product-detail/C55266.html"
 			(at 189.23 139.7 0)
 			(hide yes)
 			(show_name no)
@@ -5378,7 +5833,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "https://www.lcsc.com/datasheet/C49678.pdf"
 			(at 172.72 142.24 0)
 			(hide yes)
 			(show_name no)
@@ -5390,6 +5845,61 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 172.72 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "YAGEO"
+			(at 172.72 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "CC0805KRX7R9BB104"
+			(at 172.72 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C49678"
+			(at 172.72 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Spec" "100 nF +/-10%, 50 V, X7R, 0805 (any equivalent >=16 V X7R)"
+			(at 172.72 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Supplier Link" "https://www.lcsc.com/product-detail/C49678.html"
 			(at 172.72 142.24 0)
 			(hide yes)
 			(show_name no)
@@ -5458,7 +5968,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "https://www.lcsc.com/datasheet/C17560.pdf"
 			(at 204.47 146.05 0)
 			(hide yes)
 			(show_name no)
@@ -5470,6 +5980,61 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 204.47 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "UNI-ROYAL"
+			(at 204.47 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "0805W8F2202T5E"
+			(at 204.47 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C17560"
+			(at 204.47 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Spec" "22 kOhm +/-1%, 125 mW, 0805 - sets the eFuse current limit, keep 1%"
+			(at 204.47 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Supplier Link" "https://www.lcsc.com/product-detail/C17560.html"
 			(at 204.47 146.05 0)
 			(hide yes)
 			(show_name no)
@@ -5869,6 +6434,28 @@
 				)
 			)
 		)
+		(property "Manufacturer" "Not a purchased part"
+			(at 160.02 165.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Spec" "Bare plated through-hole pad, 2.0 mm pad / 1.0 mm drill"
+			(at 160.02 165.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "c0179ea9-4f7c-4ff6-adc8-6c446d06ae65")
 		)
@@ -5937,6 +6524,28 @@
 			)
 		)
 		(property "Description" "test point"
+			(at 172.72 165.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "Not a purchased part"
+			(at 172.72 165.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Spec" "Bare plated through-hole pad, 2.0 mm pad / 1.0 mm drill"
 			(at 172.72 165.1 0)
 			(hide yes)
 			(show_name no)
@@ -6103,6 +6712,28 @@
 				)
 			)
 		)
+		(property "Manufacturer" "Not a purchased part"
+			(at 185.42 165.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Spec" "Bare plated through-hole pad, 2.0 mm pad / 1.0 mm drill"
+			(at 185.42 165.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "be31aeba-a7e4-46ca-a735-20f10e0994be")
 		)
@@ -6171,6 +6802,28 @@
 			)
 		)
 		(property "Description" "test point"
+			(at 198.12 165.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "Not a purchased part"
+			(at 198.12 165.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Spec" "Bare plated through-hole pad, 2.0 mm pad / 1.0 mm drill"
 			(at 198.12 165.1 0)
 			(hide yes)
 			(show_name no)
@@ -6349,6 +7002,28 @@
 				)
 			)
 		)
+		(property "Manufacturer" "Generic"
+			(at 165.1 180.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Spec" "75 Ohm +/-1%, >=0.25 W, axial THT, 7.62 mm pitch"
+			(at 165.1 180.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "719058ea-022c-4c6d-b6c6-d72e22c7a5b7")
 		)
@@ -6420,6 +7095,28 @@
 			)
 		)
 		(property "Description" ""
+			(at 190.5 181.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "Generic"
+			(at 190.5 181.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Spec" "1x03 pin header, 2.54 mm pitch, vertical THT (e.g. LCSC C2937625)"
 			(at 190.5 181.61 0)
 			(hide yes)
 			(show_name no)

@@ -20,8 +20,20 @@ That means it can only read serialised fills, never recompute them.
 
 A second class of fault was found on 2026-08-29 while designing this gate:
 running DRC with `--schematic-parity` — a flag nothing in this repo had ever
-passed — reported 30 parity issues, including a stray `dnp` attribute on both
-RCA jacks that would have told a turnkey assembler not to fit them.
+passed — reported 30 parity issues, including a `dnp` attribute on both RCA
+jacks that the schematic did not share.
+
+That one is instructive, because the flag was not a mistake. It was set
+deliberately, when the plan was to have PCBWay assemble the SMD parts only and
+leave the through-hole jacks unfitted. The plan later changed; the PCB kept the
+flag and the schematic never had it. Nobody typed anything wrong — a decision
+was reversed and only one side of the design heard about it.
+
+This is the failure mode parity checking actually defends against: not typos,
+but **drift between two representations of the same intent**. It is also why a
+DNP mismatch blocks rather than warns. The gate cannot know which side is
+right — only that the two disagree about whether a part gets fitted, which is
+not a question to resolve at the assembler.
 
 ## What this is
 

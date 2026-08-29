@@ -621,11 +621,11 @@
 			)
 		)
 	)
-	(footprint "Connector_USB:USB_C_Receptacle_GCT_USB4125-xx-x-0190_6P_TopMnt_Horizontal"
+	(footprint "Connector_USB:USB_C_Receptacle_GCT_USB4125-xx-x_6P_TopMnt_Horizontal"
 		(layer "F.Cu")
 		(uuid "28987431-6581-4a17-9ffe-5dcdbbd2153d")
 		(at 49.4 22.4 180)
-		(descr "USB Type C Receptacle, GCT, power-only, 6P, top mounted, horizontal, 3A, 1.9mm stake: https://gct.co/files/drawings/usb4125.pdf")
+		(descr "USB Type C Receptacle, GCT, power-only, 6P, top mounted, horizontal, 3A, 1mm stake: https://gct.co/files/drawings/usb4125.pdf")
 		(tags "USB C Type-C receptacle power-only charging-only 6P 6C right angled")
 		(property "Reference" "USB-C1"
 			(at 0 -5.1 180)
@@ -639,7 +639,7 @@
 				)
 			)
 		)
-		(property "Value" "USB_C_Receptacle_PowerOnly_6P"
+		(property "Value" "USB4970-00-A"
 			(at 0 4.725 180)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -874,7 +874,7 @@
 			(uuid "22fe0f11-b993-46f5-9c0c-20b4afc4bff1")
 		)
 		(embedded_fonts no)
-		(model "${KICAD10_3DMODEL_DIR}/Connector_USB.3dshapes/USB_C_Receptacle_GCT_USB4125-xx-x-0190_6P_TopMnt_Horizontal.step"
+		(model "${KICAD10_3DMODEL_DIR}/Connector_USB.3dshapes/USB_C_Receptacle_GCT_USB4125-xx-x_6P_TopMnt_Horizontal.step"
 			(offset
 				(xyz 0 0 0)
 			)
@@ -2553,7 +2553,7 @@
 				)
 			)
 		)
-		(property "Value" "2SA1015"
+		(property "Value" "KSA1015"
 			(at 1.27 2.79 0)
 			(layer "F.SilkS")
 			(uuid "dece1a6b-8b2a-4c48-9385-c2081719ce03")

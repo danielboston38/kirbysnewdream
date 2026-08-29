@@ -317,13 +317,23 @@ Key notes:
 - D1 (zener/TVS): cathode (banded end) toward VBUS/+5V side. From v2 the
   silkscreen prints the value actually fitted, `1.5KE6.8A`; before that it
   printed the generic KiCad symbol name `1.5KExxA`, which is not orderable.
-- Q1 (2SA1015, PNP): flat side facing viewer, leads down = Emitter-Collector-Base, left to right. The 2SA1015 is obsolete and the market carries relabelled parts — source the **KSA1015** (onsemi), same E-C-B pinout, still in production. Do not drop in a 2N3906 or BC557 without re-checking the pinout; both differ.
+- Q1 (**KSA1015** on the silkscreen from v2, 2SA1015 lineage, PNP): flat side facing viewer, leads down = Emitter-Collector-Base, left to right. The 2SA1015 is obsolete and the market carries relabelled parts — source the **KSA1015** (onsemi), same E-C-B pinout, still in production. Do not drop in a 2N3906 or BC557 without re-checking the pinout; both differ.
 - R1 (220Ω): emitter load for Q1 — one end to +5V, the other to the Q1 emitter / C2 node. Not both ends to +5V. Raised from 300Ω in v2: at the assumed ~1.3 V base, 300–330Ω supplies only ~6.2 mA at peak white against the ~6.7 mA the 150Ω load wants. Retune if the measured DC at J4 pin 1 differs from ~1.3 V.
 - R2 (330Ω): series resistor in the video input line, between J4 pin 1 and Q1's base. See [Video input biasing](#video-input-biasing).
 - **Trim all through-hole leads flush.** The board sits in the RF module slot with shielding immediately below it. Long clipped leads on the underside will short against the can — on the prototype this presented as an intermittent supply trip that only appeared when the board was moved.
 - C2 (470µF): not 100µF. Into the 150Ω load, 100µF gives τ=15 ms against the 16.7 ms field period and tilts the picture top to bottom. 470µF gives τ=70 ms.
-- F1 (polyfuse): sits with slight standoff above PCB by design — this is normal for radial-lead parts, not a defect
-- USB-C1: GCT USB4970-00-A, SMD receptacle — power-only, no data lines
+- F1 (polyfuse): sits with slight standoff above PCB by design — this is normal for radial-lead parts, not a defect.
+  **No KiCad footprint exists for the Littelfuse RHEF series**, so F1 borrows `Fuse:Fuse_Bourns_MF-RG300`:
+  pads 5.24 mm centre-to-centre with 1.01 mm drills. The RHEF200's 0.51 mm leads at 5.05 ±0.75 mm
+  spacing fit that comfortably, but the Bourns device is rated 3.0 A/5.1 A and the silkscreen outline is
+  *its* body — treat the outline as indicative, not as a clearance boundary. Drawing a true RHEF200
+  footprint would move pad 2 by ~1.2 mm and force a re-route, so it is a v3 job, not a patch.
+- USB-C1: GCT USB4970-00-A, SMD receptacle — power-only, no data lines. KiCad has no USB4970
+  footprint, but GCT's USB4970 drawing specifies the same recommended land pattern as the USB4125
+  (pad centres 1.00/3.04/5.50 mm, shell holes 8.64 × 3.80 mm apart), so
+  `Connector_USB:USB_C_Receptacle_GCT_USB4125-xx-x` is the right footprint. Use the **plain** variant:
+  USB4970-00-A takes the 1.00 mm shell stake, and `-0190` is the 1.90 mm stake part. Pad geometry is
+  identical between the two, so this is a naming correction, not a layout change.
 - U1 (TPS2553, SOT-23-6): pin 1 is IN, marked by the dot on the package. Pin order is IN, GND, EN down one side and OUT, ILIM, FAULT up the other. Order the plain TPS2553DBVR — the `-1` suffix is the latch-off variant, which would need a power cycle after every trip instead of retrying automatically.
 - C3 (100nF, 0805): TI requires this as close to U1 pin 1 as the layout allows. It sits immediately left of U1.
 - R6 (22k, 0805): sets the current limit — see the table above before substituting.

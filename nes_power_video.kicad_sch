@@ -4071,7 +4071,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "2SA1015"
+		(property "Value" "KSA1015"
 			(at 40.64 190.4999 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4304,6 +4304,17 @@
 			)
 		)
 		(property "Supplier Link" "https://www.digikey.com/en/products/result?keywords=RHEF200"
+			(at 128.27 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint Note" "No Littelfuse RHEF footprint exists in the KiCad libraries. F1 uses the Bourns MF-RG300 land pattern: pads at (0,0) and (5.1,1.2), 5.24 mm centre-to-centre, 1.01 mm drills. RHEF200 leads are 0.51 mm dia at 5.05 +/-0.75 mm spacing, so they fit, but the Bourns part is a 3.0 A/5.1 A device and the drawn body outline is its, not the RHEF200's - do not trust the outline for clearance."
 			(at 128.27 143.51 0)
 			(hide yes)
 			(show_name no)
@@ -4939,7 +4950,7 @@
 				)
 			)
 		)
-		(property "Value" "USB_C_Receptacle_PowerOnly_6P"
+		(property "Value" "USB4970-00-A"
 			(at 113.538 132.842 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4949,7 +4960,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Connector_USB:USB_C_Receptacle_GCT_USB4125-xx-x-0190_6P_TopMnt_Horizontal"
+		(property "Footprint" "Connector_USB:USB_C_Receptacle_GCT_USB4125-xx-x_6P_TopMnt_Horizontal"
 			(at 116.84 151.13 0)
 			(hide yes)
 			(show_name no)
@@ -5016,6 +5027,17 @@
 			)
 		)
 		(property "Supplier Link" "https://www.digikey.com/en/products/result?keywords=USB4970-00-A"
+			(at 113.03 153.67 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint Note" "KiCad has no USB4970 footprint. GCT's USB4970 drawing specifies the same recommended layout as the USB4125: pad centres 1.00/3.04/5.50 mm, widths 0.70/0.76/0.80 mm x 1.20 mm, shell holes 8.64 x 3.80 mm apart, 1.10 x 1.70 mm with 0.60 x 1.20 mm slots. Verified against the drawing 2026-08-28. USB4970-00-A takes the 1.00 mm shell stake, so the plain USB4125-xx-x footprint is the match; -0190 is the 1.90 mm stake variant."
 			(at 113.03 153.67 0)
 			(hide yes)
 			(show_name no)

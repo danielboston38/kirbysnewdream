@@ -61,11 +61,21 @@ Internally split into small units, each independently testable: `locate_cli`,
 
 ```
 prefab_gate.py check   <board.kicad_pcb>   verify only, produces no files
-prefab_gate.py export  <board.kicad_pcb>   export only, refuses without a passing check
 prefab_gate.py package <board.kicad_pcb>   check then export — the un-skippable path
 ```
 
-Flags: `--out <dir>` (default `fab/`), `--json`, `--allow-cosmetic/--strict`.
+A standalone `export` subcommand was considered and dropped: an export that
+could run without a check would reintroduce exactly the skip this gate exists to
+prevent, and one that re-runs the check itself is just `package` under another
+name.
+
+Flags:
+
+| Flag | Meaning |
+|---|---|
+| `--out <dir>` | package destination, default `fab/` |
+| `--json` | machine-readable verdict on stdout in addition to the report |
+| `--strict` | treat cosmetic findings as blocking too — for a final pre-order run |
 
 Exit codes: `0` clean · `2` blocked by findings · `3` environment problem.
 
@@ -119,9 +129,11 @@ whether the package still corresponds to it.
 - `kicad-cli` missing or too old → exit `3` with platform-specific install
   hints. This plugin *requires* KiCad, the opposite of kicad-happy's premise, so
   the failure must be loud rather than a silent degrade.
-- Minimum `kicad-cli` version asserted at runtime (JSON DRC output and
-  `--schematic-parity` must both exist). Exact minimum to be confirmed during
-  implementation.
+- Capability is feature-probed rather than version-parsed: the gate runs
+  `kicad-cli pcb drc --help` once and requires `--format`, `--schematic-parity`
+  and `--refill-zones` to be present. This avoids pinning a version number that
+  would be wrong on distro builds and nightlies, and it fails with a message
+  naming the missing flag.
 - `--exit-code-violations` is deliberately not used; the gate parses the JSON and
   applies its own policy.
 - `--save-board` mutates the board, so the gate hashes it before and after and

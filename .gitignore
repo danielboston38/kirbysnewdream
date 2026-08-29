@@ -22,3 +22,7 @@ analysis/
 # Vendor datasheet PDFs pulled by the distributor skills. Large binaries,
 # freely re-downloadable from TI/LCSC/DigiKey.
 datasheets/
+
+# Python bytecode caches — running the prefab-gate unit suite creates these.
+__pycache__/
+*.pyc

@@ -2553,7 +2553,7 @@
 				)
 			)
 		)
-		(property "Value" "KSA1015"
+		(property "Value" "2SA733"
 			(at 1.27 2.79 0)
 			(layer "F.SilkS")
 			(uuid "dece1a6b-8b2a-4c48-9385-c2081719ce03")

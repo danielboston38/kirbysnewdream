@@ -317,7 +317,24 @@ Key notes:
 - D1 (zener/TVS): cathode (banded end) toward VBUS/+5V side. From v2 the
   silkscreen prints the value actually fitted, `1.5KE6.8A`; before that it
   printed the generic KiCad symbol name `1.5KExxA`, which is not orderable.
-- Q1 (**KSA1015** on the silkscreen from v2, 2SA1015 lineage, PNP): flat side facing viewer, leads down = Emitter-Collector-Base, left to right. **Both candidates are end of life** (checked 2026-08-29). The 2SA1015 is obsolete and the market carries relabelled parts; MCC's `2SA1015-GR-AP` is genuine and in stock at Mouser (14,738) but flagged End of Life. The **KSA1015** (onsemi) is no better off — every variant reads Obsolete on DigiKey, and the only stocked option is `KSA1015GRTA-ON` (11,217) through Rochester Electronics, the licensed last-time-buy channel. Either will build the board today and stock is deep, but **v3 needs a part that is actually in production**. Do not drop in a 2N3906 or BC557 without re-checking the pinout; both differ.
+- Q1 (**2SA733**, PNP): flat side facing viewer, leads down = Emitter-Collector-Base, left to right.
+  This replaces the 2SA1015/KSA1015, **both of which are end of life** (checked 2026-08-29): MCC's
+  `2SA1015-GR-AP` is stocked at Mouser but flagged End of Life, and every onsemi `KSA1015` reads
+  Obsolete on DigiKey, available only through Rochester Electronics' last-time-buy channel. The
+  2SA733 is in current production, shares the E-C-B pin order exactly so it drops straight in, and is
+  a better part for a video buffer: f_T 190 MHz typ against the 2SA1015's 80 MHz, C_ob 2–3 pF, P_C
+  750 mW, with the same V_CEO −50 V / I_C −150 mA / V_EBO −5 V — so R2 still guards the base-emitter
+  junction exactly as before. Buy the UTC `2SA733L-P-T92-B` from LCSC (**C5310429**, ~$0.035); rank P
+  is hFE 200–400, which matches the ~46 µA base current measured on the bench, so the bias point does
+  not move. DigiKey's Renesas 2SA733 is Rochester stock at $1.90 — same trap, different part.
+- **Why not a 2N3906 or BC557?** Not for the reason you might assume. Electrically the 2N3906 is
+  perfectly happy here — V_CEO −40 V, I_C −200 mA, f_T 250 MHz, V_EBO −5 V, hFE 100–300 at 10 mA,
+  every figure with huge margin against a 5 V rail at ~9.3 mA. The problem is the middle pin. Per
+  UTC's ordering tables, the 2N3906 is **E-B-C** and the 2SA733 is **E-C-B**: the 3906 puts *base* in
+  the centre where this board wants *collector*. Turning the part around gives C-B-E — base is still
+  in the middle, so no orientation fixes it and you would have to cross two leads. On a v3 layout the
+  pin order is free and the 2N3906 becomes a fine choice; on this board it is not. Pin order is a
+  manufacturer's choice rather than a standard, so check the datasheet of the exact brand you buy.
 - R1 (220Ω): emitter load for Q1 — one end to +5V, the other to the Q1 emitter / C2 node. Not both ends to +5V. Raised from 300Ω in v2: at the assumed ~1.3 V base, 300–330Ω supplies only ~6.2 mA at peak white against the ~6.7 mA the 150Ω load wants. Retune if the measured DC at J4 pin 1 differs from ~1.3 V.
 - R2 (330Ω): series resistor in the video input line, between J4 pin 1 and Q1's base. See [Video input biasing](#video-input-biasing).
 - **Trim all through-hole leads flush.** The board sits in the RF module slot with shielding immediately below it. Long clipped leads on the underside will short against the can — on the prototype this presented as an intermittent supply trip that only appeared when the board was moved.

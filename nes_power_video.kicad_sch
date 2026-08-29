@@ -4071,7 +4071,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "KSA1015"
+		(property "Value" "2SA733"
 			(at 40.64 190.4999 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4095,7 +4095,7 @@
 				(justify left)
 			)
 		)
-		(property "Datasheet" "https://www.onsemi.com/download/data-sheet/pdf/ksa1015-d.pdf"
+		(property "Datasheet" "https://www.unisonic.com.tw/uploadfiles/836/part_no_pdf/2SA733.pdf"
 			(at 35.56 189.23 0)
 			(hide yes)
 			(show_name no)
@@ -4140,7 +4140,7 @@
 				)
 			)
 		)
-		(property "Manufacturer" "onsemi"
+		(property "Manufacturer" "UTC (Unisonic)"
 			(at 35.56 189.23 0)
 			(hide yes)
 			(show_name no)
@@ -4151,7 +4151,7 @@
 				)
 			)
 		)
-		(property "MPN" "KSA1015GRTA"
+		(property "MPN" "2SA733L-P-T92-B"
 			(at 35.56 189.23 0)
 			(hide yes)
 			(show_name no)
@@ -4162,7 +4162,7 @@
 				)
 			)
 		)
-		(property "Spec" "PNP TO-92, E-C-B pinout, any hFE grade. END OF LIFE both ways: onsemi KSA1015 is obsolete, stocked only as KSA1015GRTA-ON through Rochester; MCC 2SA1015-GR-AP is on Mouser but flagged End of Life. Needs a live replacement for v3."
+		(property "Spec" "PNP TO-92, pin order E-C-B (collector in the middle) - datasheet ordering table, not a drawing. Rank P = hFE 200-400, matching the ~46 uA base current measured at ~9.3 mA emitter. VCEO -50 V, IC -150 mA, VEBO -5 V (same as the 2SA1015 it replaces, so R2 still guards the B-E junction), fT 190 MHz typ, Cob 2-3 pF. Schematic reuses the Transistor_BJT:2SA1015 symbol - same pinout family."
 			(at 35.56 189.23 0)
 			(hide yes)
 			(show_name no)
@@ -4173,7 +4173,18 @@
 				)
 			)
 		)
-		(property "Supplier Link" "https://www.digikey.com/en/products/detail/rochester-electronics-llc/KSA1015GRTA-ON/12643065"
+		(property "Supplier Link" "https://www.lcsc.com/product-detail/C5310429.html"
+			(at 35.56 189.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C5310429"
 			(at 35.56 189.23 0)
 			(hide yes)
 			(show_name no)

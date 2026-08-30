@@ -34,7 +34,7 @@
 | `prefab-gate/scripts/gate/export.py` | Atomic package export |
 | `prefab-gate/skills/prefab-gate/SKILL.md` | When to reach for the gate, how to read a verdict |
 | `prefab-gate/.claude-plugin/plugin.json` | Plugin metadata — Claude Code loads it from `.claude-plugin/`, not the plugin root |
-| `prefab-gate/.claude-plugin/marketplace.json` | Single-plugin marketplace metadata |
+| `.claude-plugin/marketplace.json` | Single-plugin marketplace metadata. **At the repository root, not inside the plugin** — a marketplace is added by bare repo reference, so the loader looks only at the root and finds nothing in a subdirectory. Its entry points back with `"source": "./prefab-gate"`. |
 | `prefab-gate/tests/` | Unit tests, one module per source module |
 
 `classify.py` is deliberately pure: it takes parsed JSON and returns a verdict, touching no filesystem and no subprocess. That is what makes the policy testable without KiCad installed.
@@ -1263,7 +1263,7 @@ with 33 cosmetic: 4 `silk_edge_clearance`, 2 `silk_overlap`, 23 `footprint_symbo
 - [ ] **Step 5: Commit**
 
 ```bash
-git add prefab-gate/.claude-plugin prefab-gate/skills prefab-gate/README.md
+git add .claude-plugin prefab-gate/.claude-plugin prefab-gate/skills prefab-gate/README.md
 git commit -m "feat(prefab-gate): package as an installable plugin"
 ```
 

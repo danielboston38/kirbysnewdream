@@ -14,3 +14,11 @@ _autosave-*
 # Stray empty stub sheets from a "new sheet" saved with a blank filename
 .kicad_sch
 .kicad_sch.kicad_sch
+
+# kicad-happy analyzer output — timestamped run folders, expensive to
+# regenerate but not worth versioning. Regenerate with the kicad skill.
+analysis/
+
+# Vendor datasheet PDFs pulled by the distributor skills. Large binaries,
+# freely re-downloadable from TI/LCSC/DigiKey.
+datasheets/

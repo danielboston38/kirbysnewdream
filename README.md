@@ -143,11 +143,12 @@ and the unused branch is an unloaded stub.
 
 If both are ever plugged in simultaneously, R7 means each still gets a properly
 terminated 75 Ω source rather than the halved amplitude you'd get from sharing one
-resistor. Q1's drive is the limit in that case, and the v2 value settles it: at
-220 Ω, R1 supplies roughly 12.9 mA standing against the ~8.7 mA peak that two
-75+75 Ω chains want. v1's 330 Ω gave only ~8.6 mA and would have sat right at the
-edge of clipping. Still not measured on hardware and still not a supported mode —
-both figures rest on the same unmeasured ~1.3 V base assumption.
+resistor. Q1's drive is the limit in that case, and it is why **R1 is 220 Ω from
+v2** rather than the original 330 Ω. Simulated in ngspice with 2 Vpp at the tap
+and both outputs terminated: at 330 Ω the follower clips the positive (white)
+peaks by 33 %, at 220 Ω by 11 %. With a single output loaded — the supported
+mode — 220 Ω is clean and symmetric (+0.439 / −0.447 V at the jack). Simulated,
+not measured on hardware, and still not a supported mode.
 
 ## Hardware
 
@@ -235,7 +236,7 @@ state risks another transistor, which is the likely fate of the first one.
 - F1 (polyfuse) footprint field in KiCad is mislabeled as a polarized capacitor footprint despite correct value — cosmetic/documentation issue only, does not affect function. Fix planned for v2.
 - Video/audio RCA jack mounting holes are slightly asymmetric — cosmetic only, doesn't affect NES shell fit.
 - v1 silkscreen doesn't include component value labels or Q1 pin markers (E/C/B). **Values are on the silkscreen from v2.** On v1 this caused three separate wrong-resistor errors in R1 (a 5.1kΩ and an 820Ω both fitted before the right value went in) because R1/R3/R4/R5/R7 share one footprint across four values. Q1 pin markers are still outstanding.
-- **D1 does not protect U1.** The fitted TVS is a 1.5KE6.8A: stand-off 5.80 V, breakdown 6.45–7.14 V at 10 mA, clamping 10.5 V at 143 A. The TPS2553's absolute maximum on IN and OUT is 7 V, so the TVS has barely begun conducting by the time the eFuse is already out of spec, and under a real surge it lets the rail reach 10.5 V. D1 protects the console downstream; it will not save U1. Repositioning D1 doesn't help — both U1 pins share the same 7 V rating — and no avalanche TVS clamps below 7 V while standing off USB-C's 5.5 V worst case. Proper protection needs a switch with integrated overvoltage cutoff. Deferred to v3 — v2 ships with this gap.
+- **D1 does not protect U1.** The fitted TVS is a Littelfuse 1.5KE6.8A: stand-off 5.80 V, breakdown 6.45–7.14 V at 10 mA, clamping 10.5 V at 144.8 A. The TPS2553's absolute maximum on IN and OUT is 7 V, so the TVS has barely begun conducting by the time the eFuse is already out of spec, and under a real surge it lets the rail reach 10.5 V. D1 protects the console downstream; it will not save U1. Repositioning D1 doesn't help — both U1 pins share the same 7 V rating — and no avalanche TVS clamps below 7 V while standing off USB-C's 5.5 V worst case. Proper protection needs a switch with integrated overvoltage cutoff. Deferred to v3 — v2 ships with this gap.
 - D1's symbol (`Diode:1.5KExxA`) names both pins A1/A2 and draws no cathode — KiCad uses identical pin naming for the unidirectional and bidirectional variants of this part. Polarity comes only from the footprint silkscreen band, which is at the pad-1 (+5 V) end and is correct. Watch this when hand-assembling.
 
 ## Video input biasing
@@ -298,15 +299,58 @@ intent — which is what the script above is for.
 
 <!-- Add step-by-step or reference photos here once you've got a documented build process -->
 
-Refer to BOM.csv for exact part values and footprints. Key notes:
-- D1 (zener/TVS): cathode (banded end) toward VBUS/+5V side
-- Q1 (2SA1015, PNP): flat side facing viewer, leads down = Emitter-Collector-Base, left to right. The 2SA1015 is obsolete and the market carries relabelled parts — source the **KSA1015** (onsemi), same E-C-B pinout, still in production. Do not drop in a 2N3906 or BC557 without re-checking the pinout; both differ.
+Refer to BOM.csv for exact part values and footprints. Every component carries
+its sourcing data in two places, kept in step: the `Manufacturer`, `MPN`,
+`LCSC`, `Supplier Link` and `Datasheet` fields on the schematic symbol, and
+the matching columns in `BOM.csv`. Jellybean passives have no manufacturer
+part number by design — they carry a `Spec` field instead (tolerance, rating,
+package) and any part meeting it will do. To pull the fields straight out of
+the schematic:
+
+```
+kicad-cli sch export bom --group-by '' \
+    --fields 'Reference,Value,Manufacturer,MPN,LCSC,Datasheet,Supplier Link,Spec' \
+    -o bom.csv nes_power_video.kicad_sch
+```
+
+Key notes:
+- D1 (zener/TVS): cathode (banded end) toward VBUS/+5V side. From v2 the
+  silkscreen prints the value actually fitted, `1.5KE6.8A`; before that it
+  printed the generic KiCad symbol name `1.5KExxA`, which is not orderable.
+- Q1 (**2SA733**, PNP): flat side facing viewer, leads down = Emitter-Collector-Base, left to right.
+  This replaces the 2SA1015/KSA1015, **both of which are end of life** (checked 2026-08-29): MCC's
+  `2SA1015-GR-AP` is stocked at Mouser but flagged End of Life, and every onsemi `KSA1015` reads
+  Obsolete on DigiKey, available only through Rochester Electronics' last-time-buy channel. The
+  2SA733 is in current production, shares the E-C-B pin order exactly so it drops straight in, and is
+  a better part for a video buffer: f_T 190 MHz typ against the 2SA1015's 80 MHz, C_ob 2–3 pF, P_C
+  750 mW, with the same V_CEO −50 V / I_C −150 mA / V_EBO −5 V — so R2 still guards the base-emitter
+  junction exactly as before. Buy the UTC `2SA733L-P-T92-B` from LCSC (**C5310429**, ~$0.035); rank P
+  is hFE 200–400, which matches the ~46 µA base current measured on the bench, so the bias point does
+  not move. DigiKey's Renesas 2SA733 is Rochester stock at $1.90 — same trap, different part.
+- **Why not a 2N3906 or BC557?** Not for the reason you might assume. Electrically the 2N3906 is
+  perfectly happy here — V_CEO −40 V, I_C −200 mA, f_T 250 MHz, V_EBO −5 V, hFE 100–300 at 10 mA,
+  every figure with huge margin against a 5 V rail at ~9.3 mA. The problem is the middle pin. Per
+  UTC's ordering tables, the 2N3906 is **E-B-C** and the 2SA733 is **E-C-B**: the 3906 puts *base* in
+  the centre where this board wants *collector*. Turning the part around gives C-B-E — base is still
+  in the middle, so no orientation fixes it and you would have to cross two leads. On a v3 layout the
+  pin order is free and the 2N3906 becomes a fine choice; on this board it is not. Pin order is a
+  manufacturer's choice rather than a standard, so check the datasheet of the exact brand you buy.
 - R1 (220Ω): emitter load for Q1 — one end to +5V, the other to the Q1 emitter / C2 node. Not both ends to +5V. Lowered from 300Ω in v2 to raise the drive current: at the assumed ~1.3 V base, 300–330Ω supplies only ~6.2 mA at peak white against the ~6.7 mA the 150Ω load wants. Retune if the measured DC at J4 pin 1 differs from ~1.3 V.
 - R2 (330Ω): series resistor in the video input line, between J4 pin 1 and Q1's base. See [Video input biasing](#video-input-biasing).
 - **Trim all through-hole leads flush.** The board sits in the RF module slot with shielding immediately below it. Long clipped leads on the underside will short against the can — on the prototype this presented as an intermittent supply trip that only appeared when the board was moved.
 - C2 (470µF): not 100µF. Into the 150Ω load, 100µF gives τ=15 ms against the 16.7 ms field period and tilts the picture top to bottom. 470µF gives τ=70 ms.
-- F1 (polyfuse): sits with slight standoff above PCB by design — this is normal for radial-lead parts, not a defect
-- USB-C1: GCT USB4970-00-A, SMD receptacle — power-only, no data lines
+- F1 (polyfuse): sits with slight standoff above PCB by design — this is normal for radial-lead parts, not a defect.
+  **No KiCad footprint exists for the Littelfuse RHEF series**, so F1 borrows `Fuse:Fuse_Bourns_MF-RG300`:
+  pads 5.24 mm centre-to-centre with 1.01 mm drills. The RHEF200's 0.51 mm leads at 5.05 ±0.75 mm
+  spacing fit that comfortably, but the Bourns device is rated 3.0 A/5.1 A and the silkscreen outline is
+  *its* body — treat the outline as indicative, not as a clearance boundary. Drawing a true RHEF200
+  footprint would move pad 2 by ~1.2 mm and force a re-route, so it is a v3 job, not a patch.
+- USB-C1: GCT USB4970-00-A, SMD receptacle — power-only, no data lines. KiCad has no USB4970
+  footprint, but GCT's USB4970 drawing specifies the same recommended land pattern as the USB4125
+  (pad centres 1.00/3.04/5.50 mm, shell holes 8.64 × 3.80 mm apart), so
+  `Connector_USB:USB_C_Receptacle_GCT_USB4125-xx-x` is the right footprint. Use the **plain** variant:
+  USB4970-00-A takes the 1.00 mm shell stake, and `-0190` is the 1.90 mm stake part. Pad geometry is
+  identical between the two, so this is a naming correction, not a layout change.
 - U1 (TPS2553, SOT-23-6): pin 1 is IN, marked by the dot on the package. Pin order is IN, GND, EN down one side and OUT, ILIM, FAULT up the other. Order the plain TPS2553DBVR — the `-1` suffix is the latch-off variant, which would need a power cycle after every trip instead of retrying automatically.
 - C3 (100nF, 0805): TI requires this as close to U1 pin 1 as the layout allows. It sits immediately left of U1.
 - R6 (22k, 0805): sets the current limit — see the table above before substituting.

@@ -47,7 +47,10 @@ or why it did not.
 ## Exit codes
 
 - `0` — clean (and, for `package`, packaged)
-- `2` — blocked; at least one blocking finding, no files written
+- `2` — blocked; at least one blocking finding, no files written. This includes
+  a board kicad-cli runs but cannot load (a truncated file, items on undefined
+  layers): that is a `board_unreadable` finding about the board, not a broken
+  install, so it belongs here rather than in `3`.
 - `3` — the gate could not run: kicad-cli missing, unreachable or too old, the
   board missing, `--schematic` pointing at nothing, unreadable DRC output, or a
   usage error.
@@ -56,9 +59,20 @@ or why it did not.
 
 ## Installing as a plugin
 
-Plugin metadata lives in `.claude-plugin/plugin.json`, with
-`.claude-plugin/marketplace.json` alongside it so this directory can be added
-as a single-plugin marketplace.
+    /plugin marketplace add danielboston38/linktovideo
+    /plugin install prefab-gate@prefab-gate
+
+Plugin metadata lives here in `prefab-gate/.claude-plugin/plugin.json`. The
+marketplace manifest is at the **repository root**, in
+`.claude-plugin/marketplace.json`, pointing back at this directory with
+`"source": "./prefab-gate"` — a marketplace is added by bare repo reference,
+so the loader looks only at the root and finds nothing in a subdirectory.
+
+## Licence
+
+The plugin is MIT — see `LICENSE` in this directory. The hardware in the rest
+of the repository is CERN-OHL-S-2.0 under the root `LICENSE.txt`. Separate
+works, separate terms.
 
 ## kicad-cli
 

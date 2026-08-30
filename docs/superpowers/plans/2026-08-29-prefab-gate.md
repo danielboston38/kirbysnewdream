@@ -33,7 +33,8 @@
 | `prefab-gate/scripts/gate/manifest.py` | Hashing and manifest construction |
 | `prefab-gate/scripts/gate/export.py` | Atomic package export |
 | `prefab-gate/skills/prefab-gate/SKILL.md` | When to reach for the gate, how to read a verdict |
-| `prefab-gate/plugin.json` | Marketplace metadata |
+| `prefab-gate/.claude-plugin/plugin.json` | Plugin metadata — Claude Code loads it from `.claude-plugin/`, not the plugin root |
+| `prefab-gate/.claude-plugin/marketplace.json` | Single-plugin marketplace metadata |
 | `prefab-gate/tests/` | Unit tests, one module per source module |
 
 `classify.py` is deliberately pure: it takes parsed JSON and returns a verdict, touching no filesystem and no subprocess. That is what makes the policy testable without KiCad installed.
@@ -1255,14 +1256,14 @@ BLOCK  courtyards_overlap         Footprint TP1, Footprint J3
 BLOCK  footprint_symbol_mismatch  Footprint J5
 ```
 
-with 29 cosmetic: 4 `silk_edge_clearance`, 2 `silk_overlap`, 23 `footprint_symbol_field_mismatch`, and 4 exclude-from-BOM differences on TP1–TP4.
+with 33 cosmetic: 4 `silk_edge_clearance`, 2 `silk_overlap`, 23 `footprint_symbol_field_mismatch`, and 4 exclude-from-BOM differences on TP1–TP4. (This plan and the spec both said 29 while their own breakdown summed to 33; 33 is correct and has been verified twice against the board.)
 
 **If the verdict differs, the gate is wrong — stop and investigate before adjusting the expectation.** The counts come from a real DRC run on this board at commit `c37b56b`.
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add prefab-gate/plugin.json prefab-gate/skills prefab-gate/README.md
+git add prefab-gate/.claude-plugin prefab-gate/skills prefab-gate/README.md
 git commit -m "feat(prefab-gate): package as an installable plugin"
 ```
 

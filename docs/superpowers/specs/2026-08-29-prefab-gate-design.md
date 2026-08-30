@@ -72,7 +72,7 @@ Internally split into small units, each independently testable: `locate_cli`,
 ## CLI
 
 ```
-prefab_gate.py check   <board.kicad_pcb>   verify only, produces no files
+prefab_gate.py check   <board.kicad_pcb>   verify only, produces no package
 prefab_gate.py package <board.kicad_pcb>   check then export — the un-skippable path
 ```
 
@@ -81,6 +81,14 @@ could run without a check would reintroduce exactly the skip this gate exists to
 prevent, and one that re-runs the check itself is just `package` under another
 name.
 
+`check` produces no *package*, but it is not read-only: DRC runs with
+`--refill-zones --save-board` on both subcommands, per the Decisions table, so
+`check` can rewrite the board's zone fills. That is deliberate — a stale fill is
+the fault this gate exists to catch, and a `check` that left it stale would
+report on a board nobody is going to fabricate. The gate hashes the board either
+side and announces the change, so the resulting git diff is expected rather than
+mysterious.
+
 Flags:
 
 | Flag | Meaning |
@@ -88,6 +96,8 @@ Flags:
 | `--out <dir>` | package destination, default `fab/` |
 | `--json` | machine-readable verdict on stdout in addition to the report |
 | `--strict` | treat cosmetic findings as blocking too — for a final pre-order run |
+| `--schematic <path>` | schematic to check parity against, when it is not the board's conventional sibling |
+| `--no-parity` | skip schematic parity; recorded as a cosmetic `parity_not_run` finding, never silently |
 
 Exit codes: `0` clean · `2` blocked by findings · `3` environment problem.
 
@@ -109,7 +119,13 @@ Exit codes: `0` clean · `2` blocked by findings · `3` environment problem.
 ## Classification
 
 **DRC violations** — `error` blocks, `warning` is cosmetic, exclusions are
-counted and otherwise ignored. **Unconnected items** always block.
+counted and otherwise ignored, and **any other severity — including an absent
+one — blocks**, for the same reason an unrecognised parity description does.
+**Unconnected items** always block.
+
+The exclusion count and the project file's `ignored_checks` both reach the
+verdict, the report and the manifest. A gate that prints PASSED without saying
+which checks were switched off is overstating its own coverage.
 
 **Schematic parity** — the JSON `type` field is *not* sufficient.
 `footprint_symbol_mismatch` covers both "doesn't match footprint given by
@@ -138,6 +154,37 @@ whether the package still corresponds to it.
 
 ## Error handling
 
+- Exit `3` covers every way the gate could not run, never a verdict about the
+  board: `kicad-cli` missing or too old, the board or its schematic missing,
+  unparseable DRC output, an unwritable package — and usage errors, which take
+  `3` rather than argparse's default `2` so CI can tell a mistyped flag from a
+  board that failed verification.
+- **Schematic parity fails closed, as a finding.** `kicad-cli pcb drc
+  --schematic-parity` exits `0` and emits `"schematic_parity": []` when it
+  cannot load the schematic, printing only to stderr. A clean parity result
+  that means "parity never ran" is the exact fault class this tool exists to
+  catch.
+
+  Refusing to start would be the wrong remedy: measured across a 493-board
+  corpus, **17.8% of real KiCad projects have no `.kicad_sch` under the board's
+  own basename** (78 with none in that directory, 10 under a different name).
+  A gate that will not start on one project in five is not a gate either.
+
+  So the gate locates the schematic — the conventional sibling, else a sole
+  `*.kicad_sch` beside the board, else nothing rather than a guess among
+  several — and when it cannot, synthesises a **blocking `parity_not_run`
+  finding** naming what it tried. `--schematic PATH` overrides the search;
+  `--no-parity` records the same finding as **cosmetic**, so a PCB-only design
+  can be gated deliberately but never silently. The stderr markers produce the
+  same finding: the violations in that report are still valid, so it is a
+  finding about the board, not an environment failure.
+
+  The manifest records whether parity ran, against which schematic, or why not.
+
+  Note that `kicad-cli pcb drc` derives the schematic from the board's basename
+  and offers no override, so `--schematic` cannot make a differently-named
+  schematic work — it must be renamed. The gate reports that rather than
+  pretending otherwise.
 - `kicad-cli` missing or too old → exit `3` with platform-specific install
   hints. This plugin *requires* KiCad, the opposite of kicad-happy's premise, so
   the failure must be loud rather than a silent degrade.
@@ -172,8 +219,11 @@ pass   footprint_symbol_field_mismatch x23         (metadata)
 pass   exclude-from-BOM differs   x4    TP1-TP4    (metadata)
 ```
 
-Two blockers, twenty-nine passed with a note. Any other verdict means the gate
-is wrong.
+Two blockers, thirty-three passed with a note — 4 + 2 + 23 + 4, which is what
+the table above sums to. (An earlier draft of this document said twenty-nine,
+which never matched its own table; the real verdict has been verified twice
+against the board. Do not "fix" the gate to reproduce the wrong number.) Any
+other verdict means the gate is wrong.
 
 ## Out of scope
 

@@ -1,10 +1,12 @@
 import io
 import json
 import os
+import shutil
 import tempfile
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
 from gate.kicad import KicadUnavailable
+from gate.manifest import sha256
 from prefab_gate import main
 
 CLEAN = {"violations": [], "unconnected_items": [], "schematic_parity": []}
@@ -40,7 +42,7 @@ def deps(drc, exported=None, record=None):
     return {"locate_cli": lambda: "kicad-cli", "probe_capability": lambda cli: None,
             "run_drc": lambda cli, board, parity=True: (drc, ""),
             "export_package": export,
-            "cli_version": lambda cli: "10.0.5", "board_hash": lambda path: "same",
+            "cli_version": lambda cli: "10.0.5", "file_hash": lambda path: "same",
             "locate_schematic": lambda board, override=None: "b.kicad_sch",
             "schematic_candidates": lambda board: []}
 
@@ -56,6 +58,12 @@ class TestCli(unittest.TestCase):
         self.addCleanup(os.chdir, self._prev_cwd)
         with open("b.kicad_pcb", "w") as fh:
             fh.write("(kicad_pcb)")
+        # The default locate_schematic double reports a schematic beside the
+        # board; the manifest hashes it for real, so it has to be there. A
+        # fixture that named a file it never created was describing a project
+        # that could not exist.
+        with open("b.kicad_sch", "w") as fh:
+            fh.write("(kicad_sch)")
 
     def test_check_on_a_clean_board_exits_zero(self):
         with redirect_stdout(io.StringIO()) as out:
@@ -123,14 +131,15 @@ class TestCli(unittest.TestCase):
     def test_says_so_when_the_refill_modified_the_board(self):
         d = deps(CLEAN)
         hashes = iter(["before", "after"])
-        d["board_hash"] = lambda path: next(hashes)
+        d["file_hash"] = lambda path: (next(hashes)
+                                       if path.endswith(".kicad_pcb") else "sch")
         with redirect_stdout(io.StringIO()) as out:
             main(["check", "b.kicad_pcb"], deps=d)
         self.assertIn("zone fills", out.getvalue())
 
     def test_stays_quiet_when_the_board_was_already_filled(self):
         d = deps(CLEAN)
-        d["board_hash"] = lambda path: "same"
+        d["file_hash"] = lambda path: "same"
         with redirect_stdout(io.StringIO()) as out:
             main(["check", "b.kicad_pcb"], deps=d)
         self.assertNotIn("zone fills", out.getvalue())
@@ -151,6 +160,12 @@ class TestExitContract(unittest.TestCase):
         self.addCleanup(os.chdir, self._prev_cwd)
         with open("b.kicad_pcb", "w") as fh:
             fh.write("(kicad_pcb)")
+        # The default locate_schematic double reports a schematic beside the
+        # board; the manifest hashes it for real, so it has to be there. A
+        # fixture that named a file it never created was describing a project
+        # that could not exist.
+        with open("b.kicad_sch", "w") as fh:
+            fh.write("(kicad_sch)")
 
     def test_a_nonexistent_board_exits_three_not_a_traceback(self):
         with redirect_stdout(io.StringIO()) as out, \
@@ -189,7 +204,7 @@ class TestExitContract(unittest.TestCase):
         def boom(path):
             raise OSError(13, "Permission denied")
         d = deps(CLEAN)
-        d["board_hash"] = boom
+        d["file_hash"] = boom
         with redirect_stdout(io.StringIO()) as out, \
                 redirect_stderr(io.StringIO()) as err:
             code = main(["check", "b.kicad_pcb"], deps=d)
@@ -234,6 +249,12 @@ class TestManifestIsAtomicWithThePackage(unittest.TestCase):
         self.addCleanup(os.chdir, self._prev_cwd)
         with open("b.kicad_pcb", "w") as fh:
             fh.write("(kicad_pcb)")
+        # The default locate_schematic double reports a schematic beside the
+        # board; the manifest hashes it for real, so it has to be there. A
+        # fixture that named a file it never created was describing a project
+        # that could not exist.
+        with open("b.kicad_sch", "w") as fh:
+            fh.write("(kicad_sch)")
 
     def test_the_manifest_is_written_into_staging_before_the_package_exists(self):
         observed = {}
@@ -282,6 +303,12 @@ class TestParityCannotRun(unittest.TestCase):
         self.addCleanup(os.chdir, self._prev_cwd)
         with open("b.kicad_pcb", "w") as fh:
             fh.write("(kicad_pcb)")
+        # The default locate_schematic double reports a schematic beside the
+        # board; the manifest hashes it for real, so it has to be there. A
+        # fixture that named a file it never created was describing a project
+        # that could not exist.
+        with open("b.kicad_sch", "w") as fh:
+            fh.write("(kicad_sch)")
 
     def verdict_json(self, argv, d):
         with redirect_stdout(io.StringIO()) as out:
@@ -309,6 +336,11 @@ class TestParityCannotRun(unittest.TestCase):
         self.assertIn("b2.kicad_sch", reason)
 
     def test_the_schematic_flag_is_passed_through_to_the_locator(self):
+        # The flag still reaches the locator — it chooses the BOM source. What
+        # it cannot do is make parity run: `kicad-cli pcb drc` derives the
+        # schematic from the board's basename, verified against KiCad 10.0.6,
+        # so this test used to assert a pass the tool never actually delivered.
+        os.remove("b.kicad_sch")
         seen = {}
 
         def locate(board, override=None):
@@ -318,9 +350,10 @@ class TestParityCannotRun(unittest.TestCase):
         d["locate_schematic"] = locate
         code, data, _ = self.verdict_json(
             ["check", "b.kicad_pcb", "--schematic", "elsewhere/s.kicad_sch"], d)
-        self.assertEqual(code, 0)
         self.assertEqual(seen["override"], "elsewhere/s.kicad_sch")
-        self.assertEqual(data["parity"]["schematic"], "elsewhere/s.kicad_sch")
+        self.assertEqual(code, 2)
+        self.assertIs(data["parity"]["ran"], False)
+        self.assertNotEqual(data["parity"]["schematic"], "elsewhere/s.kicad_sch")
 
     def test_no_parity_downgrades_to_cosmetic_but_still_records_it(self):
         code, data, text = self.verdict_json(["check", "b.kicad_pcb", "--no-parity"], deps(CLEAN))
@@ -355,6 +388,10 @@ class TestParityCannotRun(unittest.TestCase):
         self.assertIs(data["parity"]["ran"], False)
 
     def test_a_bad_schematic_override_is_an_environment_error(self):
+        # No conventional sibling: with one present the override guard refuses
+        # first, which is a different environment error than the one under test.
+        os.remove("b.kicad_sch")
+
         def locate(board, override=None):
             raise KicadUnavailable("--schematic points at '/nope', which does not exist")
         d = deps(CLEAN)
@@ -392,6 +429,12 @@ class TestJsonIsMachineReadable(unittest.TestCase):
         self.addCleanup(os.chdir, self._prev_cwd)
         with open("b.kicad_pcb", "w") as fh:
             fh.write("(kicad_pcb)")
+        # The default locate_schematic double reports a schematic beside the
+        # board; the manifest hashes it for real, so it has to be there. A
+        # fixture that named a file it never created was describing a project
+        # that could not exist.
+        with open("b.kicad_sch", "w") as fh:
+            fh.write("(kicad_sch)")
 
     def test_json_stdout_parses_with_no_stripping(self):
         # The text report used to be printed ahead of the JSON, so a consumer
@@ -405,7 +448,8 @@ class TestJsonIsMachineReadable(unittest.TestCase):
     def test_zone_refill_note_does_not_pollute_json_stdout(self):
         d = deps(CLEAN)
         hashes = iter(["before", "after"])
-        d["board_hash"] = lambda path: next(hashes)
+        d["file_hash"] = lambda path: (next(hashes)
+                                       if path.endswith(".kicad_pcb") else "sch")
         with redirect_stdout(io.StringIO()) as out, redirect_stderr(io.StringIO()) as err:
             code = main(["check", "--json", "b.kicad_pcb"], deps=d)
         self.assertEqual(code, 0)
@@ -441,6 +485,12 @@ class TestUnreadableBoardBlocks(unittest.TestCase):
         self.addCleanup(os.chdir, self._prev_cwd)
         with open("b.kicad_pcb", "w") as fh:
             fh.write("(kicad_pcb)")
+        # The default locate_schematic double reports a schematic beside the
+        # board; the manifest hashes it for real, so it has to be there. A
+        # fixture that named a file it never created was describing a project
+        # that could not exist.
+        with open("b.kicad_sch", "w") as fh:
+            fh.write("(kicad_sch)")
 
     def _deps_raising(self):
         from gate.kicad import BoardUnreadable
@@ -503,6 +553,12 @@ class TestErrorsGoToStderr(unittest.TestCase):
         self.addCleanup(os.chdir, self._prev_cwd)
         with open("b.kicad_pcb", "w") as fh:
             fh.write("(kicad_pcb)")
+        # The default locate_schematic double reports a schematic beside the
+        # board; the manifest hashes it for real, so it has to be there. A
+        # fixture that named a file it never created was describing a project
+        # that could not exist.
+        with open("b.kicad_sch", "w") as fh:
+            fh.write("(kicad_sch)")
 
     def _exploding(self, exc):
         d = deps(CLEAN)
@@ -575,14 +631,18 @@ class TestOverrideThatKicadCliWillIgnore(unittest.TestCase):
                          "b.kicad_pcb"], deps=self._deps())
         self.assertEqual(code, 0)
 
-    def test_an_override_with_no_sibling_still_works(self):
+    def test_an_override_with_no_sibling_is_accepted_but_cannot_run_parity(self):
+        # Not refused — the override is a legitimate BOM source. But it is not
+        # a file kicad-cli will read for parity, so the honest answer is "parity
+        # did not run", not a pass naming a schematic nothing checked.
         os.remove("b.kicad_sch")
         with redirect_stdout(io.StringIO()) as out, redirect_stderr(io.StringIO()):
             code = main(["check", "--json", "--schematic", "elsewhere.kicad_sch",
                          "b.kicad_pcb"], deps=self._deps())
-        self.assertEqual(code, 0)
-        self.assertEqual(json.loads(out.getvalue())["parity"]["schematic"],
-                         "elsewhere.kicad_sch")
+        self.assertEqual(code, 2)
+        parity = json.loads(out.getvalue())["parity"]
+        self.assertIs(parity["ran"], False)
+        self.assertIn("b.kicad_sch", parity["reason"])
 
 
 class TestPackagingAPcbOnlyBoard(unittest.TestCase):
@@ -597,6 +657,12 @@ class TestPackagingAPcbOnlyBoard(unittest.TestCase):
         self.addCleanup(os.chdir, self._prev_cwd)
         with open("b.kicad_pcb", "w") as fh:
             fh.write("(kicad_pcb)")
+        # The default locate_schematic double reports a schematic beside the
+        # board; the manifest hashes it for real, so it has to be there. A
+        # fixture that named a file it never created was describing a project
+        # that could not exist.
+        with open("b.kicad_sch", "w") as fh:
+            fh.write("(kicad_sch)")
 
     def test_package_no_parity_passes_none_as_the_schematic(self):
         seen = {}
@@ -612,3 +678,224 @@ class TestPackagingAPcbOnlyBoard(unittest.TestCase):
             code = main(["package", "--no-parity", "b.kicad_pcb"], deps=d)
         self.assertEqual(code, 0)
         self.assertIsNone(seen["schematic"])
+
+
+class TestSoleSchematicUnderAnotherName(unittest.TestCase):
+    """A schematic KiCad will not read is not a schematic parity can use.
+
+    locate_schematic falls back to a sole .kicad_sch beside the board even
+    when it is not named after the board, because roughly one project in five
+    has no conventional sibling and the BOM export can use any path. But
+    `kicad-cli pcb drc` derives the schematic from the board's basename and
+    offers no way to point it elsewhere, so parity against that file cannot
+    happen. Claiming ran=True made the manifest name a file that was never
+    checked — a receipt asserting something untrue, which is worse than no
+    receipt. Reproduced against KiCad 10.0.6: it prints a failure to stderr,
+    exits 0 and writes "schematic_parity": [].
+    """
+
+    def setUp(self):
+        self._prev_cwd = os.getcwd()
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        os.chdir(self._tmp.name)
+        self.addCleanup(os.chdir, self._prev_cwd)
+        with open("b.kicad_pcb", "w") as fh:
+            fh.write("(kicad_pcb)")
+        # The default locate_schematic double reports a schematic beside the
+        # board; the manifest hashes it for real, so it has to be there. A
+        # fixture that named a file it never created was describing a project
+        # that could not exist.
+        with open("b.kicad_sch", "w") as fh:
+            fh.write("(kicad_sch)")
+        with open("my_actual_design.kicad_sch", "w") as fh:
+            fh.write("(kicad_sch)")
+
+    def _deps(self):
+        d = deps(CLEAN)
+        d["locate_schematic"] = (
+            lambda board, override=None: "my_actual_design.kicad_sch")
+        return d
+
+    def test_parity_is_blocking_rather_than_silently_clean(self):
+        with redirect_stdout(io.StringIO()) as out:
+            code = main(["check", "b.kicad_pcb"], deps=self._deps())
+        self.assertEqual(code, 2)
+        self.assertIn("BLOCKED", out.getvalue())
+
+    def test_the_reason_names_the_rename_that_would_fix_it(self):
+        with redirect_stdout(io.StringIO()) as out:
+            main(["check", "b.kicad_pcb"], deps=self._deps())
+        self.assertIn("b.kicad_sch", out.getvalue())
+
+    def test_the_receipt_does_not_name_it_as_verified(self):
+        with redirect_stdout(io.StringIO()) as out:
+            main(["check", "b.kicad_pcb", "--json"], deps=self._deps())
+        parity = json.loads(out.getvalue())["parity"]
+        self.assertFalse(parity["ran"])
+        self.assertNotEqual(parity["schematic"], "my_actual_design.kicad_sch")
+
+
+class TestATruncatedReportIsNotACleanBoard(unittest.TestCase):
+    """An incomplete report is a gate failure, never a pass.
+
+    The distinction the exit contract turns on: 2 means the gate checked this
+    board and rejected it, 3 means the gate could not check it. A report with
+    sections missing is the second, and used to be reported as neither — it
+    came out as 0.
+    """
+
+    def setUp(self):
+        self._prev_cwd = os.getcwd()
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        os.chdir(self._tmp.name)
+        self.addCleanup(os.chdir, self._prev_cwd)
+        with open("b.kicad_pcb", "w") as fh:
+            fh.write("(kicad_pcb)")
+        # The default locate_schematic double reports a schematic beside the
+        # board; the manifest hashes it for real, so it has to be there. A
+        # fixture that named a file it never created was describing a project
+        # that could not exist.
+        with open("b.kicad_sch", "w") as fh:
+            fh.write("(kicad_sch)")
+
+    def _run(self, report, argv=("check", "b.kicad_pcb")):
+        with redirect_stdout(io.StringIO()) as out, \
+                redirect_stderr(io.StringIO()) as err:
+            code = main(list(argv), deps=deps(report))
+        return code, out.getvalue(), err.getvalue()
+
+    def test_a_report_missing_violations_exits_three(self):
+        code, out, err = self._run({"unconnected_items": [],
+                                    "schematic_parity": []})
+        self.assertEqual(code, 3)
+        self.assertNotIn("PASSED", out)
+        self.assertIn("violations", err)
+
+    def test_an_empty_report_exits_three(self):
+        code, out, _ = self._run({})
+        self.assertEqual(code, 3)
+        self.assertNotIn("PASSED", out)
+
+    def test_a_report_missing_parity_exits_three(self):
+        code, _, _ = self._run({"violations": [], "unconnected_items": []})
+        self.assertEqual(code, 3)
+
+    def test_no_package_is_published_from_a_truncated_report(self):
+        record = []
+        with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+            code = main(["package", "b.kicad_pcb"],
+                        deps=deps({}, record=record))
+        self.assertEqual(code, 3)
+        self.assertEqual(record, [])
+
+    def test_no_parity_does_not_demand_a_parity_section(self):
+        # --no-parity omits --schematic-parity, so a report without that
+        # section is exactly what was asked for.
+        code, out, _ = self._run({"violations": [], "unconnected_items": []},
+                                 argv=("check", "b.kicad_pcb", "--no-parity"))
+        self.assertEqual(code, 0)
+        self.assertIn("PASSED", out)
+
+
+class TestArtifactsCannotChangeAfterVerification(unittest.TestCase):
+    """The board fabricated must be the board verified.
+
+    The before/after hashes around the DRC only ever documented that KiCad's
+    own refill rewrote the board. Nothing tied the file the gerbers were
+    exported from to the file the DRC passed, so an edit landing in that
+    window produced a package that looked reproducible — the manifest hash was
+    accurate — while describing a board no check had ever seen. Same hole on
+    the schematic side, which the gate located a second time at export rather
+    than reusing the one parity ran against.
+    """
+
+    PACKAGE = "2026-01-01-00-00-00"
+
+    def setUp(self):
+        self._prev_cwd = os.getcwd()
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        os.chdir(self._tmp.name)
+        self.addCleanup(os.chdir, self._prev_cwd)
+        for name, body in (("b.kicad_pcb", "(kicad_pcb)"),
+                           ("b.kicad_sch", "(kicad_sch)")):
+            with open(name, "w") as fh:
+                fh.write(body)
+        self.exported = []
+
+    def _deps(self, mutate=None, locator=None):
+        d = deps(CLEAN)
+        # Real content hashing: a double returning a constant cannot show a
+        # file changing, which is the whole subject here.
+        d["file_hash"] = sha256
+        if locator is not None:
+            d["locate_schematic"] = locator
+
+        def export(cli, board, out_dir, *a, on_staged=None, schematic=None, **k):
+            self.exported.append(schematic)
+            if mutate is not None:
+                mutate()
+            staging = os.path.abspath(".staging")
+            os.makedirs(staging, exist_ok=True)
+            try:
+                if on_staged is not None:
+                    on_staged(staging)
+                package = os.path.abspath(self.PACKAGE)
+                os.replace(staging, package)
+                return package
+            except BaseException:
+                # Exactly what the real export_package does, so a rejection
+                # here leaves nothing that looks shippable.
+                shutil.rmtree(staging, ignore_errors=True)
+                raise
+        d["export_package"] = export
+        return d
+
+    def _package(self, **kwargs):
+        with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()) as err:
+            code = main(["package", "b.kicad_pcb"], deps=self._deps(**kwargs))
+        return code, err.getvalue()
+
+    def _touch(self, name):
+        def mutate():
+            with open(name, "a") as fh:
+                fh.write(" ")
+        return mutate
+
+    def test_a_board_edited_during_export_is_not_published(self):
+        code, err = self._package(mutate=self._touch("b.kicad_pcb"))
+        self.assertEqual(code, 3)
+        self.assertFalse(os.path.exists(self.PACKAGE))
+        self.assertIn("b.kicad_pcb", err)
+
+    def test_a_schematic_edited_during_export_is_not_published(self):
+        code, err = self._package(mutate=self._touch("b.kicad_sch"))
+        self.assertEqual(code, 3)
+        self.assertFalse(os.path.exists(self.PACKAGE))
+        self.assertIn("b.kicad_sch", err)
+
+    def test_a_rejected_package_leaves_no_staging_behind(self):
+        self._package(mutate=self._touch("b.kicad_pcb"))
+        self.assertEqual([p for p in os.listdir(".") if p.startswith(".staging")], [])
+
+    def test_an_unchanged_run_publishes_matching_hashes(self):
+        code, _ = self._package()
+        self.assertEqual(code, 0)
+        with open(os.path.join(self.PACKAGE, "manifest.json")) as fh:
+            manifest = json.load(fh)
+        self.assertEqual(manifest["board"]["sha256"],
+                         manifest["board"]["checked_sha256"])
+        self.assertEqual(manifest["schematic"]["sha256"],
+                         manifest["schematic"]["checked_sha256"])
+        self.assertEqual(manifest["schematic"]["path"], "b.kicad_sch")
+
+    def test_the_bom_comes_from_the_schematic_parity_verified(self):
+        # The locator returning something different the second time is the
+        # F-03 scenario: parity checked one file, the BOM would have been
+        # built from another. The export must see the verified one.
+        paths = iter(["b.kicad_sch", "someone_elses.kicad_sch"])
+        code, _ = self._package(locator=lambda board, override=None: next(paths))
+        self.assertEqual(code, 0)
+        self.assertEqual(self.exported, ["b.kicad_sch"])
